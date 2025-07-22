@@ -1,0 +1,8 @@
+selenium==4.19.0
+pytest
+pytest-xdist
+pytest-html
+allure-pytest
+python-dotenv
+pyyaml
+openpyxl
