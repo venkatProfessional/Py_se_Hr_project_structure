@@ -1,0 +1,9 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","12","test_dashboard_title","tests","Thu Jul 24 11:48:16 IST 2025","passed","Thu Jul 24 11:48:16 IST 2025","","test_sample","",""
+"
+This test verifies that a user can apply various filters on the HR Dashboard 
+(Datewise, Monthly, HR, Employee, Today) and that all dashboard cards navigate correctly.
+","97561","Smoke Test - Datewise Filter and Dashboard Card Navigation","tests","Thu Jul 24 11:46:00 IST 2025","passed","Thu Jul 24 11:47:38 IST 2025","","test_dashboard","",""
+"
+        Test case to verify validation messages when submitting the Designation form without entering any data.
+        ","41290","Blank Submit Validation with Multiple Edits","tests","Thu Jul 24 11:44:43 IST 2025","passed","Thu Jul 24 11:45:24 IST 2025","TestDesignationValidation","test_DR_Designation_page","",""
