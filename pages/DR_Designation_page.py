@@ -2,7 +2,7 @@
 import time
 
 from exceptiongroup import catch
-from selenium.common import TimeoutException, NoSuchElementException
+from selenium.common import TimeoutException, NoSuchElementException, NoAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -31,6 +31,14 @@ class DesignationPage(BasePage):
     edit_input = (By.XPATH, "//input[@id='name']")
     edit_description = (By.XPATH, "//textarea[@id='description']")
     edit_submit_button = (By.XPATH, "//span[normalize-space()='Submit']")
+
+
+    #delete
+
+    delete_button = (By.XPATH, "//a[contains(@href, '/designation/delete') and contains(@class, 'btn-danger')]")
+    view_delete_button = (By.XPATH, "//a[normalize-space()='View Deleted Designation']")
+    restore_button = (By.XPATH, "//a[normalize-space()='Restore']")
+    backtodesignationbtn = (By.XPATH, "//a[normalize-space()='Back to Designations']")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -297,5 +305,85 @@ class DesignationPage(BasePage):
             time.sleep(1)  # Allow form to close/table to update
 
         print("\n✅ All Edit buttons processed.")
+
+    from selenium.common.exceptions import NoAlertPresentException, TimeoutException
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+    import time
+
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import NoAlertPresentException, TimeoutException
+
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import NoAlertPresentException, TimeoutException
+
+    def handledelete(self):
+        print("🗑️ Handle delete started")
+
+        delete_buttons = self.driver.find_elements(*self.delete_button)
+        print(f"Found {len(delete_buttons)} delete buttons.")
+
+        for i in range(len(delete_buttons)):
+            print(f"\n👉 Deleting row {i + 1}...")
+
+            # Refresh buttons in case DOM updates
+            delete_buttons = self.driver.find_elements(*self.delete_button)
+
+            if i >= len(delete_buttons):
+                print(f"❌ Row {i + 1}: No more delete buttons available.")
+                break
+            # time.sleep(5)
+            delete_buttons[i].click()
+
+            print("🖱️ Delete clicked — waiting 10 seconds before checking alert...")
+            time.sleep(2)  # ⏳ Wait for alert to appear
+
+            alert_accepted = False
+
+            try:
+                WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+                alert = self.driver.switch_to.alert
+                print("⚠️ Alert text:", alert.text)
+                alert.accept()
+                print("✅ Alert accepted")
+                alert_accepted = True
+            except TimeoutException:
+                print("❌ No alert appeared — skipping restore")
+            except Exception as e:
+                print(f"❌ Error while handling alert: {e}")
+
+            if alert_accepted:
+                try:
+                    view_delete = WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable(self.view_delete_button)
+                    )
+                    view_delete.click()
+                    print("📄 View Delete clicked")
+                    time.sleep(1)
+
+                    restore_button = WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable(self.restore_button)
+                    )
+                    restore_button.click()
+                    print("♻️ Restore clicked")
+                    time.sleep(1)
+
+                    back_to_designation = WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable(self.backtodesignationbtn)
+                    )
+                    back_to_designation.click()
+                    print("🔙 Back to Designation clicked")
+                    time.sleep(1)
+
+                except Exception as e:
+                    print(f"❌ Exception during restore flow: {e}")
+
+
+
+
+
+
 
 

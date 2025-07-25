@@ -11,18 +11,16 @@ from utils.config_reader import read_config
 def driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
+
+    # ✅ Disable browser notifications
     prefs = {"profile.default_content_setting_values.notifications": 2}
     options.add_experimental_option("prefs", prefs)
 
-    # ✅ Correct way to pass service and options
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
-
+    driver = webdriver.Chrome(options=options)
     driver.implicitly_wait(10)
-    try:
-        yield driver
-    finally:
-        driver.quit()
+    yield driver
+    driver.quit()
+
 
 @pytest.fixture(scope="function")
 def login(driver):
