@@ -1,7 +1,13 @@
+import datetime
+import json
+import os
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, UnexpectedTagNameException, \
+    NoAlertPresentException
 import time
 
 class BasePage:
@@ -9,6 +15,10 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 15)
 
+    def find_element(self, locator):
+        return WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(locator)
+        )
     # Basic click method
     def click(self, locator):
         self.wait.until(EC.element_to_be_clickable(locator)).click()
@@ -157,3 +167,151 @@ class BasePage:
             return True
         except NoSuchElementException:
             return False
+
+
+    def select_dropdown(self, element: WebElement, method: str = "text", option=None):
+        """
+        Selects an option in a <select> element using the specified method.
+
+        Args:
+            element (WebElement): The <select> dropdown WebElement.
+            method (str): The selection strategy - "text", "value", or "index".
+            option (str|int): The option to select.
+
+        Raises:
+            ValueError: If method is invalid or option is None.
+            NoSuchElementException: If the dropdown or option is not found.
+            UnexpectedTagNameException: If the element is not a <select>.
+            usage
+            self.select_dropdown(status_select_element, method="text", option="Active")
+        """
+        if not option and option != 0:
+            raise ValueError("You must provide a non-null option to select.")
+
+        try:
+            select = Select(element)
+
+            if method == "text":
+                select.select_by_visible_text(str(option))
+            elif method == "value":
+                select.select_by_value(str(option))
+            elif method == "index":
+                select.select_by_index(int(option))
+            else:
+                raise ValueError(f"Unsupported selection method: {method}")
+
+            print(f"✅ Selected '{option}' using method '{method}'.")
+
+        except (NoSuchElementException, UnexpectedTagNameException) as e:
+            print(f"❌ Dropdown selection failed: {e}")
+            raise
+
+    def handle_alert(self, action="accept", timeout=5, text=None):
+        """
+        Handles JavaScript alerts.
+
+        Args:
+            action (str): "accept", "dismiss", or "gettext".
+            timeout (int): Maximum time to wait for alert.
+            text (str): Optional text to send to prompt alerts.
+
+        Returns:
+            str: Alert text if action is "gettext", else None.
+
+        Raises:
+            NoAlertPresentException: If no alert is present.
+            usage
+
+        usage
+         self.handle_alert(action="accept")
+
+        """
+        try:
+            print("⏳ Waiting for alert to be present...")
+            WebDriverWait(self.driver, timeout).until(EC.alert_is_present())
+
+            alert = self.driver.switch_to.alert
+            print("✅ Alert found.")
+
+            if text:
+                print(f"💬 Sending text to alert: {text}")
+                alert.send_keys(text)
+
+            if action == "accept":
+                print("🔘 Accepting the alert...")
+                alert.accept()
+            elif action == "dismiss":
+                print("🔘 Dismissing the alert...")
+                alert.dismiss()
+            elif action == "gettext":
+                alert_text = alert.text
+                print(f"📝 Alert text: {alert_text}")
+                return alert_text
+            else:
+                raise ValueError(f"Unsupported alert action: {action}")
+
+        except TimeoutException:
+            print("❌ Alert did not appear within the timeout.")
+            raise
+        except NoAlertPresentException:
+            print("❌ No alert present.")
+            raise
+
+    def take_screenshot(self, name_prefix="screenshot"):
+        try:
+            # Create folder path in project root
+            folder = os.path.join(os.getcwd(), "error_screenshots")
+            os.makedirs(folder, exist_ok=True)
+
+            # Build filename with timestamp
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{name_prefix}_{timestamp}.png"
+            full_path = os.path.join(folder, filename)
+
+            # Take screenshot
+            success = self.driver.save_screenshot(full_path)
+            if success:
+                print(f"📸 Screenshot saved successfully at: {full_path}")
+            else:
+                print("⚠️ Screenshot capture failed.")
+            return full_path
+
+        except Exception as e:
+            print(f"❌ Failed to save screenshot: {e}")
+            return None
+
+    def pause(self, seconds: float = 1.0, reason: str = "") -> None:
+        """
+        Pause execution for a specified number of seconds.
+
+        Args:
+            seconds (float): Duration to pause in seconds. Default is 1.0.
+            reason (str): Optional reason for the pause, useful for logging/debugging.
+
+        Returns:
+            None
+        """
+        if reason:
+            print(f"⏸️ Pausing for {seconds} seconds — {reason}")
+        else:
+            print(f"⏸️ Pausing for {seconds} seconds...")
+
+        time.sleep(seconds)
+
+        # ✅ Fix: Add 'file_path' parameter
+
+    def read_employee_json(self):
+        path = r"C:\Users\User\PycharmProjects\SmiligenceHrAdmin\data\employee_data.json"
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    def safe_select_dropdown(self, dropdown_element, option_text):
+        try:
+            select = Select(dropdown_element)
+            select.select_by_visible_text(option_text)
+        except Exception as e:
+            print(f"⚠️ Option '{option_text}' not found, selecting first available option.")
+            try:
+                select.select_by_index(2)
+            except:
+                print("❌ Dropdown is empty or not interactable.")

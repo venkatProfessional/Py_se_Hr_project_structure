@@ -1,0 +1,40 @@
+[
+  {
+    "Name": "John Doe",
+    "Gender": "Male",
+    "Role": "Manager",
+    "Type": "Full-Time",
+    "Designation": "Project Lead",
+    "Experience": "5 Years",
+    "Official Email": "john.doe@company.com",
+    "Personal Email": "johndoe@gmail.com",
+    "Joining Date": "2023-05-10",
+    "DOB": "1990-01-01",
+    "Phone": "9876543210",
+    "Password": "Test@123",
+    "Aadhar Number": "123456789012",
+    "Blood Group": "O+",
+    "Address": "123 Main Street",
+    "PF Type": "EPF",
+    "Basic Salary": "45000"
+  },
+  {
+    "Name": "Jane Smith",
+    "Gender": "Female",
+    "Role": "HR",
+    "Type": "Part-Time",
+    "Designation": "HR Executive",
+    "Experience": "3 Years",
+    "Official Email": "jane.smith@company.com",
+    "Personal Email": "jane.smith@gmail.com",
+    "Joining Date": "2022-07-01",
+    "DOB": "1992-03-15",
+    "Phone": "9123456780",
+    "Password": "Secure@456",
+    "Aadhar Number": "987654321098",
+    "Blood Group": "A+",
+    "Address": "456 Elm Street",
+    "PF Type": "EPF",
+    "Basic Salary": "30000"
+  }
+]
