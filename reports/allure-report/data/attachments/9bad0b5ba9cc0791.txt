@@ -1,0 +1,58 @@
+Waiting for 2 second(s)...
+Waiting for 2 second(s)...
+Waiting for 2 second(s)...
+Waiting for 2 second(s)...
+Waiting for 2 second(s)...
+
+[INFO] Navigating to: Total Employees
+[SUCCESS] Navigation verified for: Total Employees
+
+[INFO] Navigating to: Total Check-In
+[ERROR] Failed to navigate or validate 'Total Check-In': Message: 
+
+
+[INFO] Navigating to: Total Absent
+[SUCCESS] Navigation verified for: Total Absent
+
+[INFO] Navigating to: Leaves Pending
+[ERROR] Failed to navigate or validate 'Leaves Pending': Message: 
+
+
+[INFO] Navigating to: Leaves Approved
+[ERROR] Failed to navigate or validate 'Leaves Approved': Message: 
+
+
+[INFO] Navigating to: Unmarked Breaks
+[ERROR] Failed to navigate or validate 'Unmarked Breaks': Message: 
+
+
+[INFO] Navigating to: Leaves Tomorrow
+[ERROR] Failed to navigate or validate 'Leaves Tomorrow': Message: 
+
+
+[INFO] Navigating to: Permissions Pending
+[ERROR] Failed to navigate or validate 'Permissions Pending': Message: 
+
+
+[INFO] Navigating to: Permissions Approved
+[ERROR] Failed to navigate or validate 'Permissions Approved': Message: 
+
+
+[INFO] Navigating to: Permission Tomorrow
+[ERROR] Failed to navigate or validate 'Permission Tomorrow': Message: 
+
+
+[INFO] Navigating to: Relieving
+[ERROR] Failed to navigate or validate 'Relieving': Message: 
+
+
+[INFO] Navigating to: New Joiner
+[SUCCESS] Navigation verified for: New Joiner
+
+[INFO] Navigating to: Check-Out Completion
+[ERROR] Failed to navigate or validate 'Check-Out Completion': Message: 
+
+
+[INFO] Navigating to: Marked Breaks
+[ERROR] Failed to navigate or validate 'Marked Breaks': Message: 
+
