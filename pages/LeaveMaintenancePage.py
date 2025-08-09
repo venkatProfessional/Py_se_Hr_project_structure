@@ -16,6 +16,15 @@ class LeaveMaintenancePage(BasePage):
     checkallboxes = (By.XPATH, "//input[@id='select-all']")
     scroll_and_click_view =(By.XPATH, "(//a[@class='btn btn-sm btn-primary'][normalize-space()='View'])[1]")
     back_btn = (By.XPATH, "//a[normalize-space()='Back']")
+    employee_name = (By.XPATH, "//th[normalize-space()='Employee Name']")
+
+    # show all btm
+    bulk_update_btn = (By.XPATH,"//button[@id='approve-selected']")
+    Approve_radio = (By.XPATH,"//input[@id='approveRadio']")
+    decline_radio = (By.XPATH,"//input[@id='declineRadio']")
+    enter_reason_input = (By.XPATH, "//input[@id='reason']")
+    cancel_btn = (By.XPATH,"//button[normalize-space()='Cancel']")
+    Submit_btn = (By.XPATH, "//button[normalize-space()='Submit']")
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -77,3 +86,43 @@ class LeaveMaintenancePage(BasePage):
 
             else:
                 print("❌ 'Employee Name' column not visible — can't proceed")
+
+
+    def implementing_show_all(self):
+        print("started implementing show all")
+        self.wait_and_click(self.show_all_button)
+        print("finished implementing show all")
+        element = self.scroll_and_find("//th[normalize-space()='Employee Name']",
+                                       by="xpath",
+                                       direction="vertical",
+                                       timeout=10)
+
+        if element:
+            print("✅ Found employee element:", element.text)
+        else:
+            print("❌ Employee element not found")
+
+        self.set_checkbox_state(self.checkallboxes)
+        self.wait_and_click(self.bulk_update_btn)
+        # self.wait_and_click()
+        self.pause(4)
+        # self.select_radio_button("declineRadioGroup", value="Decline", by='name')
+        self.select_radio_button("//input[@id='declineRadio']", by='xpath')
+        self.enter_text(self.enter_reason_input,"test")
+        self.wait_and_click(self.cancel_btn)
+        # self.wait_and_click(self.Submit_btn)
+
+        # calendar_popup_xpath = "//div[@class='calendar-container']"
+        # self.select_calendar_date(
+        #     target_date="2025-08-09",
+        #     calendar_root_xpath=calendar_popup_xpath,
+        #     month_label_xpath=".//div[@class='calendar-header']//span[@class='month']",
+        #     year_label_xpath=".//div[@class='calendar-header']//span[@class='year']",
+        #     prev_btn_xpath=".//button[text()='« Prev']",
+        #     next_btn_xpath=".//button[text()='Next »']",
+        #     day_cell_xpath=".//td[normalize-space(text())='%d']"
+        # )
+
+#
+
+

@@ -9,7 +9,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, UnexpectedTagNameException, \
-    NoAlertPresentException, ElementNotInteractableException, WebDriverException, JavascriptException
+    NoAlertPresentException, ElementNotInteractableException, WebDriverException, JavascriptException, \
+    StaleElementReferenceException
 import time
 
 class BasePage:
@@ -415,7 +416,7 @@ class BasePage:
         :param timeout: Maximum wait time in seconds.
         :return: True if text is found and visible, False otherwise.
         """
-        xpath = f"//*[contains(text(),'{text}')]"
+        xpath =  f"//*[contains(.,'{text}')]"
         try:
             WebDriverWait(self.driver, timeout).until(
                 EC.visibility_of_element_located((By.XPATH, xpath))
@@ -471,6 +472,57 @@ class BasePage:
         except Exception as e:
             print(f"❌ Failed to click element with {by} '{identifier}': {e}")
             return False
+
+    def scroll_and_find(self, identifier, by="text", direction="vertical", timeout=10, poll_frequency=0.5):
+        """
+        Scroll until element is found or timeout occurs.
+        """
+        try:
+            # Build XPath
+            if by == "text":
+                xpath = f"//*[contains(text(), '{identifier}')]"
+            elif by == "xpath":
+                xpath = identifier
+            else:
+                raise ValueError("Parameter 'by' must be 'text' or 'xpath'")
+
+            scroll_script = {
+                "vertical": "arguments[0].scrollIntoView({block: 'center'});",
+                "horizontal": "arguments[0].scrollIntoView({inline: 'center'});",
+                "both": "arguments[0].scrollIntoView({block: 'center', inline: 'center'});"
+            }
+            script = scroll_script.get(direction.lower())
+            if not script:
+                raise ValueError("Invalid direction. Use 'vertical', 'horizontal', or 'both'.")
+
+            end_time = time.time() + timeout  # Python-based timer
+
+            while time.time() < end_time:
+                try:
+                    elements = self.driver.find_elements(By.XPATH, xpath)
+                    if elements:
+                        element = elements[0]
+                        self.driver.execute_script(script, element)
+                        print(f"✅ Found element with {by}: {identifier}")
+                        return element
+
+                    # Scroll slightly if not found
+                    if direction.lower() in ["vertical", "both"]:
+                        self.driver.execute_script("window.scrollBy(0, 300);")
+                    if direction.lower() in ["horizontal", "both"]:
+                        self.driver.execute_script("window.scrollBy(300, 0);")
+
+                except (NoSuchElementException, StaleElementReferenceException):
+                    pass
+
+                time.sleep(poll_frequency)  # short delay
+
+            print(f"❌ Element with {by} '{identifier}' not found in {timeout} seconds")
+            return None
+
+        except Exception as e:
+            print(f"❌ Error in scroll_and_find: {e}")
+            return None
 
     def verify_pdf_downloaded(self, expected_filename=None, timeout=15, download_dir=None):
         """
@@ -835,6 +887,172 @@ class BasePage:
         except Exception as e:
             print(f"❌ Unexpected error occurred while loading JSON: {e}")
             return None
+
+    def select_radio_button(self, locator, value=None, by='name', timeout=10, poll_frequency=0.5):
+        """
+        Robustly select a radio button given a locator and optionally a value within a radio group.
+
+        :param locator: The locator string (e.g., name or XPath or ID) to identify the radio buttons.
+                        If by='xpath' or 'css selector', should point directly to radio buttons.
+                        If by='name' or 'id', will find all radios with that attribute.
+        :param value: (Optional) The value attribute of the radio button to select in a group.
+                      If None and multiple radios exist, selects the first.
+        :param by: Locator type - 'id', 'name', 'xpath', 'css selector'. Default is 'name'.
+        :param timeout: Maximum seconds to wait for radio buttons to be clickable.
+        :param poll_frequency: Time interval between retries while waiting.
+        :return: True if selection succeeded, False otherwise.
+        """
+
+        try:
+            wait = WebDriverWait(self.driver, timeout, poll_frequency)
+
+            # Locate radio button(s)
+            if by.lower() in ['id', 'name']:
+                # Usually radio buttons are grouped by name, so find all with that name or by id (rare)
+                radios = wait.until(EC.presence_of_all_elements_located((getattr(By, by.upper()), locator)))
+                if not radios:
+                    print(f"❌ No radio buttons found with {by}='{locator}'")
+                    return False
+                # If value specified, find matching value attribute
+                if value is not None:
+                    target_radio = None
+                    for rb in radios:
+                        rb_value = rb.get_attribute('value')
+                        if rb_value == value:
+                            target_radio = rb
+                            break
+                    if not target_radio:
+                        print(f"❌ No radio button with value='{value}' found in group {by}='{locator}'")
+                        return False
+                else:
+                    # No value specified, pick first radio button
+                    target_radio = radios[0]
+            elif by.lower() in ['xpath', 'css selector']:
+                # When locator targets single radio button directly via xpath/css
+                target_radio = wait.until(EC.element_to_be_clickable((getattr(By, by.upper()), locator)))
+            else:
+                print(f"❌ Unsupported locator type '{by}'")
+                return False
+
+            # Scroll into view (optional)
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", target_radio)
+
+            # Click the radio button if not already selected
+            if not target_radio.is_selected():
+                wait.until(EC.element_to_be_clickable(target_radio))
+                target_radio.click()
+
+            # Verify selection
+            if target_radio.is_selected():
+                print(
+                    f"✅ Radio button selected successfully: {by}='{locator}'" + (f", value='{value}'" if value else ''))
+                return True
+            else:
+                print(
+                    f"❌ Failed to select the radio button: {by}='{locator}'" + (f", value='{value}'" if value else ''))
+                return False
+
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException) as e:
+            print(f"❌ Exception occurred while selecting radio button: {e}")
+            return False
+
+    def select_calendar_date(
+            self,
+            target_date,
+            calendar_root_xpath,
+            month_label_xpath=".//span[contains(@class,'month') or contains(text(),'August')]",
+            year_label_xpath=".//span[contains(@class,'year')]",
+            prev_btn_xpath=".//button[contains(@class,'Prev') or contains(text(),'Prev')]",
+            next_btn_xpath=".//button[contains(@class,'Next') or contains(text(),'Next')]",
+            day_cell_xpath=".//td[not(contains(@class,'disabled')) and text()='%d']",
+            timeout=10
+    ):
+        """
+        Select a date in a popup calendar widget.
+        Parameters:
+            self                 : Your class instance with self.driver
+            target_date          : The date to select. Accepts 'YYYY-MM-DD' string or datetime.date
+            calendar_root_xpath  : XPath for calendar root/container (for context)
+            *_label_xpath        : XPath for month/year navigation labels (relative to root)
+            *_btn_xpath          : XPath for prev/next month navigation buttons (relative to root)
+            day_cell_xpath       : XPath pattern for day cell, use %d for the day (relative to root)
+            timeout              : Timeout for all waits
+        Returns:
+            True on success. False otherwise.
+        """
+        # 1. Parse the date
+        if isinstance(target_date, str):
+            target = datetime.datetime.strptime(target_date, "%Y-%m-%d").date()
+        elif isinstance(target_date, datetime.date):
+            target = target_date
+        else:
+            print(f"❌ Invalid target_date: {target_date}")
+            return False
+
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            # 2. Focus calendar root only: all lookups are relative to the open calendar
+            root = wait.until(EC.visibility_of_element_located((By.XPATH, calendar_root_xpath)))
+            # 3. Find displayed month and year
+            month_label = root.find_element(By.XPATH, month_label_xpath)
+            year_label = root.find_element(By.XPATH, year_label_xpath)
+            # Month names for parsing
+            months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+                      "November", "December"]
+
+            def get_displayed_month_year():
+                month_text = month_label.text.strip()
+                year_text = year_label.text.strip()
+                # Safe conversion for "August 2025"
+                try:
+                    month_idx = months.index(month_text) + 1
+                except Exception:
+                    month_idx = None
+                try:
+                    year_idx = int(year_text)
+                except Exception:
+                    year_idx = None
+                return month_idx, year_idx
+
+            # 4. Navigate to correct month/year
+            max_steps = 24  # Prevent infinite loop
+            while max_steps > 0:
+                disp_month, disp_year = get_displayed_month_year()
+                if disp_month == target.month and disp_year == target.year:
+                    break
+                elif (disp_year, disp_month) < (target.year, target.month):
+                    next_btn = root.find_element(By.XPATH, next_btn_xpath)
+                    next_btn.click()
+                else:
+                    prev_btn = root.find_element(By.XPATH, prev_btn_xpath)
+                    prev_btn.click()
+                # Re-fetch current month and year
+                wait.until(lambda d: get_displayed_month_year() != (disp_month, disp_year))
+                max_steps -= 1
+            if max_steps == 0:
+                print("❌ Calendar navigation failed to reach the target month/year")
+                return False
+
+            # 5. Click on the day cell
+            day_xpath = day_cell_xpath % target.day
+            day_cell = wait.until(EC.element_to_be_clickable(
+                (By.XPATH, f"{calendar_root_xpath}{day_xpath if day_xpath.startswith('/') else '/' + day_xpath}")))
+            day_cell.click()
+            print(f"✅ Selected date: {target}")
+            return True
+
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"❌ Failed to select date {target_date}: {e}")
+            return False
+        except Exception as e:
+            print(f"❌ Unexpected error selecting date: {e}")
+            return False
+
+        
+
+
+
+
 
 
 

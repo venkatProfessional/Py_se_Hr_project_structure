@@ -12,6 +12,8 @@ class Test_leave_maintenance():
         page = LeaveMaintenancePage(driver)
         page.navigating_to_leave_maintenance_page()
         page.selecting_top_fields()
+        page.implementing_show_all()
+
 
 
 
