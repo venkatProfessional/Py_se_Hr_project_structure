@@ -2,6 +2,7 @@
 import pytest
 from pages.EmployeeCreation_Page import EmployeeCreationPage
 
+
 @pytest.mark.usefixtures("driver", "login")
 class TestEmployeeCreation:
 
@@ -17,4 +18,3 @@ class TestEmployeeCreation:
 
 
 
-    

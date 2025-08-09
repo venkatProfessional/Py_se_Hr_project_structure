@@ -1,0 +1,167 @@
+🔍 Navigating to 'Designation Roles' section...
+✅ Clicked on 'Designation Roles'.
+🔍 Navigating to 'Roles' subsection...
+✅ Clicked on 'Roles'.
+⏳ Waiting for roles list to load...
+✅ Roles list navigation complete.
+
+🔄 Editing role at row 1...
+🔍 Locating edit button for row 1: //tbody/tr[1]/td[5]/a[1]
+✅ Clicked edit button at row 1
+🔍 Typing role name: Global Admin 1
+✅ Role name entered.
+🔍 Locating status dropdown...
+✅ Status dropdown located.
+🔍 Selecting 'Active' from status dropdown...
+✅ Selected 'Active' using method 'text'.
+✅ Status 'Active' selected.
+🔍 Clicking 'Update Role' button...
+✅ Role updated successfully.
+
+🔄 Editing role at row 2...
+🔍 Locating edit button for row 2: //tbody/tr[2]/td[5]/a[1]
+✅ Clicked edit button at row 2
+🔍 Typing role name: Global Admin 2
+✅ Role name entered.
+🔍 Locating status dropdown...
+✅ Status dropdown located.
+🔍 Selecting 'Active' from status dropdown...
+✅ Selected 'Active' using method 'text'.
+✅ Status 'Active' selected.
+🔍 Clicking 'Update Role' button...
+✅ Role updated successfully.
+
+🔄 Editing role at row 3...
+🔍 Locating edit button for row 3: //tbody/tr[3]/td[5]/a[1]
+✅ Clicked edit button at row 3
+🔍 Typing role name: Global Admin 3
+✅ Role name entered.
+🔍 Locating status dropdown...
+✅ Status dropdown located.
+🔍 Selecting 'Active' from status dropdown...
+✅ Selected 'Active' using method 'text'.
+✅ Status 'Active' selected.
+🔍 Clicking 'Update Role' button...
+✅ Role updated successfully.
+🛑 Done editing roles. No further clicks will be performed.
+🗑️ Starting deletion flow for multiple roles...
+🔍 Attempting to click the soft delete button...
+✅ Soft delete button clicked.
+⏳ Waiting for alert to appear (timeout: 10s)...
+⏸️ Pausing for 1.5 seconds...
+⏳ Waiting for alert to be present...
+✅ Alert found.
+🔘 Accepting the alert...
+✅ Alert accepted successfully.
+⏸️ Pausing for 2 seconds...
+🔁 [Step 1] Role creation started...
+🔍 [Step 2] Clicking the 'Create' button for role 'ADMIN HRAAA'...
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'ADMIN HRAAA'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'ADMIN HRAAA' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'MANAGER'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'MANAGER'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Inactive'
+⚠️ Option 'Inactive' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'MANAGER' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'DEVELOPER'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'DEVELOPER'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'DEVELOPER' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'QA ENGINEER'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'QA ENGINEER'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Inactive'
+⚠️ Option 'Inactive' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'QA ENGINEER' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'UI DESIGNER'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'UI DESIGNER'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'UI DESIGNER' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'DATA ANALYST'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'DATA ANALYST'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'DATA ANALYST' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'SALES EXECUTIVE'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'SALES EXECUTIVE'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Inactive'
+⚠️ Option 'Inactive' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'SALES EXECUTIVE' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'CUSTOMER SUPPORT'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'CUSTOMER SUPPORT'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'CUSTOMER SUPPORT' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'IT ADMIN'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'IT ADMIN'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Inactive'
+⚠️ Option 'Inactive' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'IT ADMIN' creation submitted.
+🔍 [Step 2] Clicking the 'Create' button for role 'PROJECT COORDINATOR'...
+⚠️ Timeout: Element ('xpath', "//a[normalize-space()='Create']") not clickable or not visible.
+✅ [Step 2] 'Create' button clicked.
+📝 [Step 3] Typing role name: 'PROJECT COORDINATOR'
+✅ [Step 3] Role name entered.
+📂 [Step 4] Selecting status: 'Active'
+⚠️ Option 'Active' not found, selecting first available option.
+❌ Dropdown is empty or not interactable.
+✅ [Step 4] Status selected.
+🚀 [Step 5] Clicking the 'Submit' button...
+✅ [Step 5] Submit button clicked. Role 'PROJECT COORDINATOR' creation submitted.
+🎉 [Done] Role creation process completed for all roles.

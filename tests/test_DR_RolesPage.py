@@ -11,6 +11,8 @@ class TestDesignationRolesValidation:
     def test_validating_DR_roles(self, driver):
         page = RolesPage(driver)
         page.navigating_roles_list()
-        page.edit_roles_for_multiple_rows()
+
         page.delete_roles_for_multiple_rows()
+        page.create_roles()
+        page.edit_roles_for_multiple_rows()
 

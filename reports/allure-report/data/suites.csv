@@ -1,10 +1,14 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","32880","test_employee_creation","tests","Wed Jul 30 17:41:35 IST 2025","failed","Wed Jul 30 17:42:08 IST 2025","TestEmployeeCreation","test_employeeCreation","",""
 "
         Test case to verify validation messages when submitting the Designation form without entering any data.
-        ","124219","Blank Submit Validation with Multiple Edits","tests","Fri Jul 25 16:58:22 IST 2025","passed","Fri Jul 25 17:00:27 IST 2025","TestDesignationValidation","test_DR_Designation_page","",""
+        ","126722","Blank Submit Validation with Multiple Edits","tests","Wed Jul 30 17:33:53 IST 2025","passed","Wed Jul 30 17:36:00 IST 2025","TestDesignationValidation","test_DR_Designation_page","",""
+"","18","test_dashboard_title","tests","Wed Jul 30 17:44:02 IST 2025","passed","Wed Jul 30 17:44:02 IST 2025","","test_sample","",""
 "
 This test verifies that a user can apply various filters on the HR Dashboard 
 (Datewise, Monthly, HR, Employee, Today) and that all dashboard cards navigate correctly.
-","98266","Smoke Test - Datewise Filter and Dashboard Card Navigation","tests","Fri Jul 25 17:00:54 IST 2025","passed","Fri Jul 25 17:02:32 IST 2025","","test_dashboard","",""
+","98293","Smoke Test - Datewise Filter and Dashboard Card Navigation","tests","Wed Jul 30 17:39:21 IST 2025","passed","Wed Jul 30 17:40:59 IST 2025","","test_dashboard","",""
+"","41187","implementing employee type history","tests","Wed Jul 30 17:42:45 IST 2025","passed","Wed Jul 30 17:43:26 IST 2025","TestEmployeeTypeHistory","test_employee_type_history","",""
+"","7279","test_valid_assignment_permissions","tests","Wed Jul 30 17:33:10 IST 2025","passed","Wed Jul 30 17:33:17 IST 2025","TestAssignmentPermission","test_DR_AssignmentpermissionPage","",""
+"","127676","Blank Submit Validation with Multiple Edits","tests","Wed Jul 30 17:36:36 IST 2025","passed","Wed Jul 30 17:38:44 IST 2025","TestDesignationRolesValidation","test_DR_RolesPage","",""
 "","0","test_dashboard_title","","Fri Jul 25 16:44:35 IST 2025","skipped","Fri Jul 25 16:44:35 IST 2025","","","",""
-"","15","test_dashboard_title","tests","Fri Jul 25 17:03:09 IST 2025","passed","Fri Jul 25 17:03:09 IST 2025","","test_sample","",""

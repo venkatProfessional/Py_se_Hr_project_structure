@@ -1,0 +1,16 @@
+navigating to assign permissions
+⏸️ Pausing for 2 seconds...
+implementing assign permission flow
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: HR
+[✔] Selected: HR
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: Finance
+[✔] Selected: Finance
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: Manager
+[✔] Selected: Manager
+[🔎] Checkbox current state: checked
+[✅] Desired state: checked
+[ℹ] Checkbox already in desired state. No action taken.
+⏸️ Pausing for 2 seconds...

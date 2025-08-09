@@ -1,3 +1,4 @@
+import json
 import time
 from tkinter.tix import Select
 
@@ -21,6 +22,13 @@ class RolesPage(BasePage):
     # delete
     soft_delete_button =(By.XPATH,"(//a[contains(text(),'Soft Delete')])[1]")
 
+    # create button
+    create_button =(By.XPATH, "//a[normalize-space()='Create']")
+    create_role_name = (By.XPATH, "//input[@id='name']")
+    pick_status_select = (By.XPATH, "/html/body/div/div[1]/div[3]/div/div/div/form/div[1]/div[2]/select")
+    submit_btn_create =(By.XPATH, "//button[normalize-space()='Submit']")
+
+
 
 
     def __init__(self, driver):
@@ -40,9 +48,57 @@ class RolesPage(BasePage):
         time.sleep(1)
         print("✅ Roles list navigation complete.")
 
-    def edit_roles_for_multiple_rows(self):
+    def create_roles(self):
+        print("🔁 [Step 1] Role creation started...")
+
+        # Load roles from JSON file
+        with open(r"C:\Users\User\PycharmProjects\SmiligenceHrAdmin\data\roles.json", "r") as file:
+            roles = json.load(file)
+
+        for role in roles:
+            role_name = role["role_name"]
+            status = role["status"]
+
+            try:
+                print(f"🔍 [Step 2] Clicking the 'Create' button for role '{role_name}'...")
+                self.wait_and_click(self.create_button)
+                print("✅ [Step 2] 'Create' button clicked.")
+            except Exception as e:
+                print(f"❌ [Error] Failed to click 'Create' button: {e}")
+                continue
+
+            try:
+                print(f"📝 [Step 3] Typing role name: '{role_name}'")
+                self.enter_text(self.create_role_name, role_name)
+                print("✅ [Step 3] Role name entered.")
+            except Exception as e:
+                print(f"❌ [Error] Failed to enter role name: {e}")
+                continue
+
+            try:
+                print(f"📂 [Step 4] Selecting status: '{status}'")
+                self.select_by_visible_text__(self.pick_status_select, status)
+                print("✅ [Step 4] Status selected.")
+            except Exception as e:
+                print(f"❌ [Error] Failed to select status: {e}")
+                continue
+
+            try:
+                print("🚀 [Step 5] Clicking the 'Submit' button...")
+                self.wait_and_click(self.submit_btn_create)
+                print(f"✅ [Step 5] Submit button clicked. Role '{role_name}' creation submitted.")
+            except Exception as e:
+                print(f"❌ [Error] Failed to click submit button: {e}")
+                continue
+
+        print("🎉 [Done] Role creation process completed for all roles.")
+
+    def  edit_roles_for_multiple_rows(self):
         for row_index in range(1, 4):
             print(f"\n🔄 Editing role at row {row_index}...")
+            isalreadytakenvisible = self.is_text_visible_on_page("The name has already been taken.")
+            if isalreadytakenvisible:
+                self.navigate_back()
 
             edit_button_xpath = f"//tbody/tr[{row_index}]/td[5]/a[1]"
             print(f"🔍 Locating edit button for row {row_index}: {edit_button_xpath}")
@@ -81,6 +137,8 @@ class RolesPage(BasePage):
             self.pause(1.5)  # Give time for alert to appear visibly
             self.handle_alert(action="accept", timeout=10)
             print("✅ Alert accepted successfully.")
+            self.pause(2)
+            self.navigate_back()
 
         except Exception as e:
             print(f"❌ Exception occurred during role deletion: {e}")
@@ -98,6 +156,8 @@ class RolesPage(BasePage):
                           attachment_type=allure.attachment_type.TEXT)
 
             raise  # Re-raise the exception to let test fail
+
+
 
 
 

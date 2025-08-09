@@ -1,0 +1,105 @@
+📄 Entered Designation Page
+📝 Attempting to edit the item...
+✅ Edit action performed.
+Updated a designation name
+description updated
+submit button in edit page is clicked
+🛠️ Starting multiple edit operations...
+🔍 Found 7 edit buttons, performing edit on first 5.
+
+✏️ Editing row 1 of 5
+📝 Name updated to: SoftwareEngineer1
+📝 Description updated to: JuniorEngineer1
+🚀 Submitted the edit form. Waiting for result...
+⚠️ Name might be invalid or form still open. Re-submitting...
+⚠️ Timeout occurred while locating elements.
+✅ Edit passed with valid name format.
+Found 7 edit buttons.
+
+Editing row 1:
+Second radio button is selected, switching to first.
+🚀 Submit button clicked for this row.
+
+Editing row 2:
+First radio button is selected, switching to second.
+🚀 Submit button clicked for this row.
+
+Editing row 3:
+Second radio button is selected, switching to first.
+🚀 Submit button clicked for this row.
+
+Editing row 4:
+Second radio button is selected, switching to first.
+🚀 Submit button clicked for this row.
+
+Editing row 5:
+Second radio button is selected, switching to first.
+🚀 Submit button clicked for this row.
+
+Editing row 6:
+First radio button is selected, switching to second.
+🚀 Submit button clicked for this row.
+
+Editing row 7:
+Second radio button is selected, switching to first.
+🚀 Submit button clicked for this row.
+
+✅ All Edit buttons processed.
+🗑️ Handle delete started
+Found 7 delete buttons.
+
+👉 Deleting row 1...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 2...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 3...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 4...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 5...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 6...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked
+
+👉 Deleting row 7...
+🖱️ Delete clicked — waiting 10 seconds before checking alert...
+⚠️ Alert text: Are you sure you want to delete this designation?
+✅ Alert accepted
+📄 View Delete clicked
+♻️ Restore clicked
+🔙 Back to Designation clicked

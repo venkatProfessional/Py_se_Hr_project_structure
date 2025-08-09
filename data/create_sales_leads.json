@@ -1,0 +1,42 @@
+[
+    {
+        "company_name": "AlphaTech Solutions",
+        "client_name": "John Doe",
+        "client_phone": "1112223333",
+        "client_address": "101 Tech Park, Silicon Valley",
+        "client_email": "john.doe@alphatech.com",
+        "image_path": "C:\\Users\\User\\Downloads\\gg.png"
+    },
+    {
+        "company_name": "Beta Innovations",
+        "client_name": "Sara Lee",
+        "client_phone": "4445556666",
+        "client_address": "202 Innovation Drive, Austin",
+        "client_email": "sara.lee@betainnovations.com",
+        "image_path": "C:\\Users\\User\\Downloads\\gg.png"
+    },
+    {
+        "company_name": "Gamma Corp",
+        "client_name": "Mike Jordan",
+        "client_phone": "7778889999",
+        "client_address": "303 Enterprise Way, Seattle",
+        "client_email": "mike.jordan@gammacorp.com",
+        "image_path": "C:\\Users\\User\\Downloads\\gg.png"
+    },
+    {
+        "company_name": "Delta Systems",
+        "client_name": "Lisa Wong",
+        "client_phone": "8889990000",
+        "client_address": "404 Business Blvd, Chicago",
+        "client_email": "lisa.wong@deltasystems.com",
+        "image_path": "C:\\Users\\User\\Downloads\\gg.png"
+    },
+    {
+        "company_name": "Epsilon Enterprises",
+        "client_name": "Raj Patel",
+        "client_phone": "1234567890",
+        "client_address": "505 Corporate Ave, New York",
+        "client_email": "raj.patel@epsilonent.com",
+        "image_path": "C:\\Users\\User\\Downloads\\gg.png"
+    }
+]

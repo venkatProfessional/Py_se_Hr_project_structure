@@ -1,0 +1,22 @@
+[
+  {
+    "designationname": "Developer",
+    "designationdescription": "Responsible for developing software"
+  },
+  {
+    "designationname": "Tester",
+    "designationdescription": "Responsible for testing software"
+  },
+  {
+    "designationname": "Manager",
+    "designationdescription": "Manages teams and projects"
+  },
+  {
+    "designationname": "Designer",
+    "designationdescription": "Designs UI/UX"
+  },
+  {
+    "designationname": "DevOps",
+    "designationdescription": "Handles infrastructure and deployments"
+  }
+]

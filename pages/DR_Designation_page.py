@@ -48,16 +48,21 @@ class DesignationPage(BasePage):
         self.wait_and_click(self.designation_roles_button)
         self.wait_and_click(self.designation_drop_down)
 
-    def handle_create_designation(self, name="DEV", desc="test"):
+    def handle_create_designation(self, design_name="DEV", design_desc="test"):
         self.wait_and_click(self.create_button)
-        self.enter_text(self.designation_name, name)
-        self.enter_text(self.designation_description, desc)
+        self.enter_text(self.designation_name, design_name)
+        self.enter_text(self.designation_description, design_desc)
+
+        self.pause(2)
+        self.scroll_to_element(self.submit_button)
         self.wait_and_click(self.submit_button)
 
     def submit_without_entering_data(self):
         self.wait_and_click(self.create_button)
+        self.scroll_to_element(self.submit_button)
         self.wait_and_click(self.submit_button)
         time.sleep(4)
+        self.scroll_to_element(self.back_button)
         self.wait_and_click(self.back_button)
 
     def is_name_required_error_displayed(self) -> bool:
@@ -101,7 +106,7 @@ class DesignationPage(BasePage):
         print("📝 Attempting to edit the item...")
         self.wait_and_click(self.edit_button)
         print("✅ Edit action performed.")
-        self.slow_typing(self.edit_input, "Software Engineer")
+        self.slow_typing(self.edit_input, "SDE")
         time.sleep(1)  # Give time for validation JS to process
         print("Updated a designation name")
         self.slow_typing(self.edit_description, "JuniorEngineer")

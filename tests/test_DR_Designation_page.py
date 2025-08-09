@@ -1,3 +1,4 @@
+import json
 import time
 import pytest
 import allure
@@ -20,15 +21,22 @@ class TestDesignationValidation:
             page.submit_without_entering_data()
 
         with allure.step("Handle validation message display"):
-            page.handle_create_designation()
+            with open('C:\\Users\\User\\PycharmProjects\\SmiligenceHrAdmin\\data\\designation_data.json', 'r') as file:
+                designations = json.load(file)
+
+            for designation in designations:
+                page.handle_create_designation(
+                    design_name=designation.get('designationname', "DEV"),
+                    design_desc=designation.get('designationdescription', "test")
+                )
+
 
         time.sleep(2)
 
         with allure.step("Perform single edit"):
             page.handleedit()
 
-        with allure.step("Perform multiple edits"):
-            page.handlemultipleedits()
+
 
         with allure.step("Check if name format is valid"):
             if page.is_invalid_name_format_displayed():
@@ -54,6 +62,9 @@ class TestDesignationValidation:
                 screenshot = page.driver.get_screenshot_as_png()
                 allure.attach(screenshot, name="Error Screenshot", attachment_type=allure.attachment_type.PNG)
                 print(f"⚠️ Caught exception during delete handling: {e}")
+
+        with allure.step("Perform multiple edits"):
+            page.handlemultipleedits()
 
     # @allure.title("🧪 Test: Delete and Restore Designation Flow")
     # @allure.severity(allure.severity_level.CRITICAL)

@@ -1,0 +1,16 @@
+[
+ {
+    "project_name": "Lotus Residency",
+    "project_address": "101 Garden Street, Salem",
+    "owner_name": "Rahul",
+    "client_phone": "9856231457",
+    "owner_distance": "10",
+    "google_point_1": "11.664325",
+    "google_point_2": "78.1460142",
+    "start_date": "10-05-2025",
+    "end_date": "04-30-2026",
+    "status": "Active",
+    "project_lead": "Karthik",
+    "is_primary_project": "off"
+  }
+]

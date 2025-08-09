@@ -1,0 +1,58 @@
+[
+  {
+    "project_name": "Green Valley Project",
+    "project_address": "123 Palm Street, Chennai",
+    "owner_name": "Arjun",
+    "client_phone": "9876543210",
+    "owner_distance": "15",
+    "google_point_1": "12.9715987",
+    "google_point_2": "77.5945627",
+    "start_date": "08-01-2025",
+    "end_date": "12-31-2025",
+    "status": "Disable",
+    "project_lead": "Sakthi",
+    "is_primary_project": "on"
+  },
+  {
+    "project_name": "Blue Hills Project",
+    "project_address": "456 Lakeview Road, Coimbatore",
+    "owner_name": "Divya",
+    "client_phone": "9001234567",
+    "owner_distance": "8",
+    "google_point_1": "11.0168445",
+    "google_point_2": "76.9558321",
+    "start_date": "09-10-2025",
+    "end_date": "01-15-2026",
+    "status": "Active",
+    "project_lead": "Karthik",
+    "is_primary_project": "off"
+  },
+  {
+    "project_name": "Skyline Apartments",
+    "project_address": "789 Sunrise Avenue, Madurai",
+    "owner_name": "Meena",
+    "client_phone": "9798676543",
+    "owner_distance": "12",
+    "google_point_1": "9.9252007",
+    "google_point_2": "78.1197754",
+    "start_date": "07-20-2025",
+    "end_date": "02-28-2026",
+    "status": "Active",
+    "project_lead": "Vikram",
+    "is_primary_project": "on"
+  },
+  {
+    "project_name": "Lotus Residency",
+    "project_address": "101 Garden Street, Salem",
+    "owner_name": "Rahul",
+    "client_phone": "9856231457",
+    "owner_distance": "10",
+    "google_point_1": "11.664325",
+    "google_point_2": "78.1460142",
+    "start_date": "10-05-2025",
+    "end_date": "04-30-2026",
+    "status": "Active",
+    "project_lead": "Karthik",
+    "is_primary_project": "off"
+  }
+]
