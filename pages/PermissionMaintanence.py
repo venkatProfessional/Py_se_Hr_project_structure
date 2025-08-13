@@ -83,6 +83,7 @@ class PermissionMaintenance(BasePage):
                self.enter_text(self.Enter_reason_input,"test")
                self.wait_and_click(self.confirmApprove)
                self.wait(6)
+               self.navigate_back()
 
             else:
                 print("May already be approved or rejected.")
