@@ -9,6 +9,7 @@ class AttendanceMaintenance(BasePage):
     select_excel_file = (By.XPATH,"//input[@id='attendanceFile']")
     download_sample_xlsx = (By.XPATH,"//a[normalize-space()='Download Sample XLSX']")
     upload_btn = (By.XPATH,"//button[@type='submit']")
+    export_attendance = (By.XPATH,"/html/body/div/div[1]/div[3]/div/div[1]/div/div/a[2]")
 
 
 
@@ -32,6 +33,10 @@ class AttendanceMaintenance(BasePage):
         self.wait_and_click(self.download_sample_xlsx)
         # self.verify_pdf_downloaded(expected_filename="attendance_sample (9).pdf")
         self.wait_and_click(self.upload_btn)
-        self.navigate_back()
+        # self.navigate_back()
+
+    def handleuploadattendance(self):
+        print("handling uploading the attendance flow...")
+        self.wait_and_click(self.export_attendance)
 
 
