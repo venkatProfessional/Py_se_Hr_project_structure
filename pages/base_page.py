@@ -1,6 +1,8 @@
 from datetime import datetime
 import json
 import os
+from pathlib import Path
+
 
 import allure
 from selenium.webdriver import Keys
@@ -10,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, UnexpectedTagNameException, \
     NoAlertPresentException, ElementNotInteractableException, WebDriverException, JavascriptException, \
-    StaleElementReferenceException
+    StaleElementReferenceException, ElementClickInterceptedException
 import time
 
 class BasePage:
@@ -32,6 +34,11 @@ class BasePage:
         element = self.wait.until(EC.element_to_be_clickable(locator))
         element.clear()
         element.send_keys(text)
+        # Retrieve entered text
+        entered_text = element.get_attribute("value")
+
+        # Print confirmation message
+        print(f"✅ Successfully entered text: '{entered_text}' in element located by {locator}")
 
     # Wait until element is visible
     def wait_until_visible(self, locator, timeout=10):
@@ -62,7 +69,12 @@ class BasePage:
             WebDriverWait(self.driver, timeout).until(
                 EC.element_to_be_clickable(locator)
             )
-            element.click()
+            try:
+                element.click()
+                print(f"✅ Element clicked successfully: {locator}")
+            except ElementClickInterceptedException:
+                print(f"⚠️ Element present but could not be clicked: {locator}")
+                self.driver.save_screenshot("wait_and_click_error.png")
         except TimeoutException:
             print(f"⚠️ Timeout: Element {locator} not clickable or not visible.")
             self.driver.save_screenshot("wait_and_click_error.png")
@@ -562,6 +574,71 @@ class BasePage:
         print("❌ PDF download failed or timed out.")
         return False
 
+    def verify_file_downloaded(self, expected_filename=None, file_extension=None, timeout=15, download_dir=None):
+        """
+        Verifies if the latest matching file is downloaded within the given timeout.
+
+        - If expected_filename is given → partial match (contains), case-insensitive.
+        - If file_extension is given → matches extension (with or without filename).
+        - Picks the most recently downloaded matching file.
+
+        :param expected_filename: Partial file name to check (e.g., 'attendance')
+        :param file_extension: File extension to check (e.g., 'pdf', 'xlsx')
+        :param timeout: Max wait time in seconds
+        :param download_dir: Download folder (default: system Downloads)
+        :return: Path of the latest matching file, else None
+        """
+        if download_dir is None:
+            download_dir = str(Path.home() / "Downloads")
+
+        if file_extension:
+            file_extension = file_extension.lower().lstrip('.')  # normalize extension
+
+        print(f"🔍 Checking for latest downloaded file in: {download_dir}")
+        print(f"⏳ Waiting up to {timeout} seconds")
+        if expected_filename:
+            print(f"📄 Looking for filename containing: {expected_filename}")
+        if file_extension:
+            print(f"📑 Expected file extension: .{file_extension}")
+
+        end_time = time.time() + timeout
+
+        while time.time() < end_time:
+            matching_files = []
+
+            for file in os.listdir(download_dir):
+                file_path = os.path.join(download_dir, file)
+
+                # Skip incomplete downloads
+                if file.endswith(".crdownload") or file.endswith(".part"):
+                    continue
+
+                # Mode 1: Only filename given (partial match)
+                if expected_filename and not file_extension:
+                    if expected_filename.lower() in file.lower():
+                        matching_files.append(file_path)
+
+                # Mode 2: Filename + extension
+                elif expected_filename and file_extension:
+                    if expected_filename.lower() in file.lower() and file.lower().endswith(f".{file_extension}"):
+                        matching_files.append(file_path)
+
+                # Mode 3: Only extension given
+                elif file_extension and not expected_filename:
+                    if file.lower().endswith(f".{file_extension}"):
+                        matching_files.append(file_path)
+
+            # If we found any matching files, pick the latest
+            if matching_files:
+                latest_file = max(matching_files, key=os.path.getmtime)
+                print(f"✅ Latest matching file found: {os.path.basename(latest_file)}")
+                return latest_file
+
+            time.sleep(1)
+
+        print("❌ File not found within timeout.")
+        return None
+
     def handle_popup_and_click(self, popup_locator, button_locator, timeout=10):
         """
         Waits for a popup to be visible, then clicks the specified button inside it.
@@ -1048,11 +1125,67 @@ class BasePage:
             print(f"❌ Unexpected error selecting date: {e}")
             return False
 
-        
+    def robust_select_dropdown_option(self, locator, text=None, index=None, timeout=10):
+        from selenium.webdriver.support.ui import Select
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
 
+        try:
+            dropdown_element = WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located(locator)
+            )
+            select = Select(dropdown_element)
 
+            if text:
+                try:
+                    select.select_by_visible_text(text)
+                    print(f"✅ Selected by text: '{text}'")
+                    return
+                except NoSuchElementException:
+                    print(f"⚠️ Option '{text}' not found, falling back to index if provided...")
 
+            if index is not None:
+                try:
+                    select.select_by_index(index)
+                    print(f"✅ Selected by index: {index}")
+                    return
+                except NoSuchElementException:
+                    raise Exception(f"❌ Index {index} not found in dropdown options.")
 
+            raise Exception("❌ No valid option found. Provide a correct visible text or index.")
+
+        except TimeoutException:
+            raise Exception(f"❌ Dropdown {locator} not found within {timeout} seconds.")
+
+    def get_attribute_value(self, locator, attribute_name):
+        """
+        Get the value of an attribute from the element located by `locator`.
+
+        Args:
+            locator (tuple): Selenium locator tuple, e.g., (By.ID, "element_id")
+            attribute_name (str): The attribute name whose value is to be fetched
+
+        Returns:
+            str: The value of the attribute
+
+        Raises:
+            TimeoutException: If element is not found within timeout
+            NoSuchElementException: If element is not found in DOM
+            Exception: For other unexpected errors
+        """
+        try:
+            element = WebDriverWait(self.driver, self.timeout).until(
+                EC.presence_of_element_located(locator)
+            )
+            value = element.get_attribute(attribute_name)
+            return value
+        except TimeoutException:
+            raise TimeoutException(f"Timed out waiting for element {locator} to get attribute '{attribute_name}'")
+        except NoSuchElementException:
+            raise NoSuchElementException(f"Element not found {locator} when fetching attribute '{attribute_name}'")
+        except Exception as e:
+            raise Exception(f"Failed to get attribute '{attribute_name}' from element {locator}: {e}")
 
 
 
