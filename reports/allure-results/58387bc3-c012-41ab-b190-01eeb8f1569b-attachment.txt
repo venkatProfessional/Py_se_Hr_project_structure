@@ -1,0 +1,7 @@
+⚠️ Debug bar not found or already removed.
+✅ Successfully entered text: 'admin@gmail.com' in element located by ('name', 'email')
+✅ Successfully entered text: 'Welcome@l1' in element located by ('name', 'passwords')
+🔍 Starting test: Navigate to Task Maintenance Page
+Entering into task maintanence page
+⚠️ Timeout: Element ('xpath', "//div[@data-i18n='Task Maintenance']") not clickable or not visible.
+✅ Navigation successful

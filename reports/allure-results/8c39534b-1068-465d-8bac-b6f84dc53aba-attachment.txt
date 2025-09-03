@@ -1,0 +1,56 @@
+⚠️ Debug bar not found or already removed.
+✅ Successfully entered text: 'admin@gmail.com' in element located by ('name', 'email')
+✅ Successfully entered text: 'Welcome@l1' in element located by ('name', 'passwords')
+Navigating to Attendance Maintenance...
+✅ Element clicked successfully: ('xpath', "//div[@data-i18n='Attendance Maintenance']")
+upload attendance flow...
+✅ Element clicked successfully: ('xpath', "//button[normalize-space()='Upload Attendance (Excel)']")
+📤 Uploading file: C:\Users\Raja\PycharmProjects\Py_se_Hr_project_structure\data\demo_files\attendance_sample (8).xlsx
+✅ File upload triggered successfully.
+⏸️ Pausing for 3.0 seconds...
+✅ Element clicked successfully: ('xpath', "//a[normalize-space()='Download Sample XLSX']")
+🔍 Checking for latest downloaded file in: C:\Users\Raja\Downloads
+⏳ Waiting up to 20 seconds
+📄 Looking for filename containing: attendance_sample.xlsx
+✅ Latest matching file found: attendance_sample.xlsx
+✅ Element clicked successfully: ('xpath', "//button[@type='submit']")
+⏸️ Pausing for 3.0 seconds...
+handling uploading the attendance flow...
+✅ Element clicked successfully: ('xpath', "//a[normalize-space()='Export Attendance']")
+[🔍] Raw input value: 13-08-2025
+[✅] Parsed datetime object: 2025-08-13 00:00:00
+[📤] Final date to send: 13-08-2025
+[✅] Date entered successfully.
+[DEBUG] After typing, field value is: 2025-08-13
+[🔍] Raw input value: 20-08-2025
+[✅] Parsed datetime object: 2025-08-20 00:00:00
+[📤] Final date to send: 20-08-2025
+[✅] Date entered successfully.
+[DEBUG] After typing, field value is: 2025-08-20
+✅ Element clicked successfully: ('xpath', "//button[normalize-space()='EXCEL']")
+🔍 Checking for latest downloaded file in: C:\Users\Raja\Downloads
+⏳ Waiting up to 20 seconds
+📄 Looking for filename containing: attendance.xlsx
+✅ Latest matching file found: attendance.xlsx
+clicking on Attendance...
+✅ Element clicked successfully: ('xpath', "//a[normalize-space()='Attendance']")
+✅ Selected by text: 'Jack'
+[🔍] Raw input value: 06/08/2025
+[✅] Parsed datetime object: 2025-08-06 00:00:00
+[📤] Final date to send: 06/08/2025
+[✅] Date entered successfully.
+[DEBUG] After typing, field value is: 2025-08-06
+✅ Successfully entered text: '12.00 PM ' in element located by ('xpath', "//input[@id='checkin_time']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='break_time']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='lunch_time']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='break_time3']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='break_time4']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='break_time5']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='break_time6']")
+✅ Successfully entered text: '12.00 PM' in element located by ('xpath', "//input[@id='checkout_time']")
+✅ Successfully entered text: 'test' in element located by ('xpath', "//textarea[@id='reason']")
+✅ Element clicked successfully: ('xpath', "//button[normalize-space()='Submit']")
+Entering error message check...
+Text 'This Employee already checked-in on 2025-08-06' is visible on the page.
+Error message is visible as expected.
+Error message is visible as already existing data.

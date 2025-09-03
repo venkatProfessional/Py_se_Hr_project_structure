@@ -1,0 +1,4 @@
+⚠️ Debug bar not found or already removed.
+✅ Successfully entered text: 'admin@gmail.com' in element located by ('name', 'email')
+✅ Successfully entered text: 'Welcome@l1' in element located by ('name', 'passwords')
+✅ Element clicked successfully: ('xpath', "//div[@data-i18n='Project Maintenance']")

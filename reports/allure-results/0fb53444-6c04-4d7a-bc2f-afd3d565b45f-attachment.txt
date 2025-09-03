@@ -1,0 +1,23 @@
+⚠️ Debug bar not found or already removed.
+✅ Successfully entered text: 'admin@gmail.com' in element located by ('name', 'email')
+✅ Successfully entered text: 'Welcome@l1' in element located by ('name', 'passwords')
+navigating to assign permissions
+✅ Element clicked successfully: ('xpath', "//div[@data-i18n='Designation & Roles']")
+✅ Element clicked successfully: ('xpath', "//div[@data-i18n='Assign Roles & Permissions']")
+⏸️ Pausing for 2 seconds...
+implementing assign permission flow
+✅ Element clicked successfully: ('xpath', "//div[@class='row']//div[1]//div[1]//div[1]//a[1]")
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: HR
+[✔] Selected: HR
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: Finance
+[✔] Selected: Finance
+[🔍] Clicking Select2 container: ('xpath', "//span[@class='selection']")
+[⌨️] Typing and selecting: Manager
+[✔] Selected: Manager
+[🔎] Checkbox current state: checked
+[✅] Desired state: checked
+[ℹ] Checkbox already in desired state. No action taken.
+✅ Element clicked successfully: ('xpath', "//button[normalize-space()='Update']")
+⏸️ Pausing for 2 seconds...

@@ -1,0 +1,16 @@
+⚠️ Debug bar not found or already removed.
+✅ Successfully entered text: 'admin@gmail.com' in element located by ('name', 'email')
+✅ Successfully entered text: 'Welcome@l1' in element located by ('name', 'passwords')
+Navigating to Advance
+✅ Element clicked successfully: ('xpath', "//a[@href='https://smiligencehr.itsfortesza.com/advance']")
+Implementing Create Advance Amount
+✅ Element clicked successfully: ('xpath', "//a[normalize-space()='Create Advance Amount']")
+start filling the forms
+✅ Selected by text: 'Jack'
+✅ Selected by text: 'Cash'
+✅ Successfully entered text: '10000' in element located by ('xpath', "//input[@id='payment']")
+✅ Selected by text: 'Full-Payment'
+✅ Successfully entered text: ' test Description' in element located by ('xpath', "//textarea[@placeholder='Description']")
+⏸️ Pausing for 6.0 seconds...
+✅ Element clicked successfully: ('xpath', "//button[normalize-space()='Submit']")
+⏸️ Pausing for 6.0 seconds...
