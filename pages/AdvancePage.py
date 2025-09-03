@@ -43,6 +43,7 @@ class AdvanceMaintanencePage(BasePage):
         # print("EMI value is: ", expectedvalueofEMIpermonth)
         self.enter_text(self.description_in," test Description")
         self.pause(6.0)
-        # self.wait_and_click(self.submit)
+        self.wait_and_click(self.submit)
+        self.pause(6.0)
 
 

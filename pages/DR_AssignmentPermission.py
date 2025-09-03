@@ -31,8 +31,19 @@ class DR_AssignmentPermission(BasePage):
         self.wait_and_click(self.assign_list_edit_button)
         self.select2_select_multiple_options(self.select2_locator, ["HR", "Finance", "Manager"])
         self.set_checkbox_state(self.modules_check_box_toSelect_all)
+        self.scroll_to_element(self.update_btn)
         self.wait_and_click(self.update_btn)
         self.pause(2)
+
+
+
+
+
+
+
+
+
+
 
 
 

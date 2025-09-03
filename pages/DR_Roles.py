@@ -14,22 +14,19 @@ class RolesPage(BasePage):
     roles_button = (By.XPATH, "//div[@data-i18n='Roles & Permissions']")
 
     # Edit button
-    edit_button = (By.XPATH, "//tbody/tr[1]/td[5]/a[1]")
+    edit_button = (By.XPATH, "//body[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[5]/a[1]")
     role_name = (By.XPATH,"//input[@id='name']")
     status = (By.XPATH, "//select[@id='status']")
     update_role = (By.XPATH, "//button[normalize-space()='Update Role']")
 
     # delete
-    soft_delete_button =(By.XPATH,"(//a[contains(text(),'Soft Delete')])[1]")
+    soft_delete_button =(By.XPATH,"//body[1]/div[1]/div[1]/div[3]/div[1]/div[2]/div[1]/table[1]/tbody[1]/tr[1]/td[5]/a[2]")
 
     # create button
-    create_button =(By.XPATH, "//a[normalize-space()='Create']")
+    create_button =(By.XPATH, "//span[normalize-space()='Create']")
     create_role_name = (By.XPATH, "//input[@id='name']")
     pick_status_select = (By.XPATH, "/html/body/div/div[1]/div[3]/div/div/div/form/div[1]/div[2]/select")
     submit_btn_create =(By.XPATH, "//button[normalize-space()='Submit']")
-
-
-
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -52,7 +49,7 @@ class RolesPage(BasePage):
         print("🔁 [Step 1] Role creation started...")
 
         # Load roles from JSON file
-        with open(r"C:\Users\User\PycharmProjects\SmiligenceHrAdmin\data\roles.json", "r") as file:
+        with open(r"C:\Users\Raja\PycharmProjects\Py_se_Hr_project_structure\data\roles.json", "r") as file:
             roles = json.load(file)
 
         for role in roles:

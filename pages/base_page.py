@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 import json
 import os
@@ -5,7 +6,7 @@ from pathlib import Path
 
 
 import allure
-from selenium.webdriver import Keys
+from selenium.webdriver import Keys, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait, Select
@@ -20,6 +21,78 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 15)
         # self.remove_debug_bar()
+
+    #     assertions
+
+    def assert_element_visible(self, locator, message=None):
+        element = self.driver.find_element(*locator)
+        assert element.is_displayed(), message or f"Element {locator} is not visible"
+
+    def assert_text_equals(self, locator, expected_text, message=None):
+        try:
+            # Wait for the element to be visible before asserting
+            element = WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located(locator)
+            )
+
+            # Get the text and strip any whitespace
+            actual_text = element.text.strip()
+
+            # Handle case where element has no text
+            if not actual_text:
+                raise AssertionError(
+                    message or f"Element at {locator} has no text, expected '{expected_text}'"
+                )
+
+            # Assert the text matches the expected value
+            assert actual_text == expected_text, \
+                message or f"Expected '{expected_text}' but got '{actual_text}'"
+
+        except TimeoutException:
+            raise AssertionError(
+                message or f"Element at {locator} was not visible within 10 seconds"
+            )
+        except NoSuchElementException:
+            raise AssertionError(
+                message or f"Element at {locator} could not be found"
+            )
+        except Exception as e:
+            raise AssertionError(
+                message or f"Unexpected error while asserting text: {str(e)}"
+            )
+
+    def assert_input_value(self, locator, expected_value, message=None):
+        element = self.driver.find_element(*locator)
+        actual_value = element.get_attribute("value").strip()
+        assert actual_value == expected_value, \
+            message or f"Expected value '{expected_value}' but got '{actual_value}'"
+
+    def assert_url_contains(self, expected_part, message=None):
+        current_url = self.driver.current_url.lower()
+        assert expected_part.lower() in current_url, \
+            message or f"URL '{current_url}' does not contain '{expected_part}'"
+
+    def is_parameter_in_url(self, parameter):
+        """
+        Check if a given parameter exists in the current URL.
+
+        Args:
+            driver: Selenium WebDriver instance
+            parameter (str): String to search for in the URL
+
+        Returns:
+            bool: True if parameter is found in URL, False otherwise
+        """
+        try:
+            # Get the current URL
+            current_url = self.driver.current_url
+            # Check if parameter exists in the URL
+            return parameter.lower() in current_url.lower()
+        except Exception as e:
+            print(f"Error checking URL: {str(e)}")
+            return False
+
+
 
     def find_element(self, locator):
         return WebDriverWait(self.driver, 10).until(
@@ -118,7 +191,9 @@ class BasePage:
 
     # Get current URL
     def get_current_url(self):
-        return self.driver.current_url
+        current_url = self.driver.current_url
+        print(f"Current URL: {current_url}")
+        return current_url
 
     # Accept alert if present
     def accept_alert(self):
@@ -331,6 +406,9 @@ class BasePage:
 
         # ✅ Fix: Add 'file_path' parameter
 
+    def wait_for_seconds(self, seconds):
+        time.sleep(seconds)
+
     def read_employee_json(self):
         path = r"C:\Users\User\PycharmProjects\SmiligenceHrAdmin\data\employee_data.json"
         with open(path, "r", encoding="utf-8") as file:
@@ -536,6 +614,43 @@ class BasePage:
             print(f"❌ Error in scroll_and_find: {e}")
             return None
 
+    #     grok scrolls
+
+    def scroll(self, target=None, direction="down", amount=500):
+        """
+        Handles scrolling on the page or inside a scrollable element with logging.
+
+        :param target: WebElement (scrollable div/iframe) or None (scroll page)
+        :param direction: 'down' or 'up'
+        :param amount: pixels to scroll
+        """
+        try:
+            if target:
+                # Scroll inside a specific element
+                if direction == "down":
+                    self.driver.execute_script(
+                        "arguments[0].scrollTop += arguments[1];", target, amount
+                    )
+                    print(f"✅ Scrolled down {amount}px inside the element.")
+                else:  # up
+                    self.driver.execute_script(
+                        "arguments[0].scrollTop -= arguments[1];", target, amount
+                    )
+                    print(f"✅ Scrolled up {amount}px inside the element.")
+            else:
+                # Scroll the entire window
+                if direction == "down":
+                    self.driver.execute_script(f"window.scrollBy(0, {amount});")
+                    print(f"✅ Scrolled down {amount}px on the main page.")
+                else:  # up
+                    self.driver.execute_script(f"window.scrollBy(0, -{amount});")
+                    print(f"✅ Scrolled up {amount}px on the main page.")
+        except Exception as e:
+            print(f"❌ Scroll failed: {e}")
+
+
+
+
     def verify_pdf_downloaded(self, expected_filename=None, timeout=15, download_dir=None):
         """
         Verifies that a PDF file is downloaded within a timeout.
@@ -686,6 +801,25 @@ class BasePage:
             print(f"❌ URL did not match within {timeout} seconds. Current URL: {self.driver.current_url}")
             return False
 
+    def check_current_url_contains(self, expected_url_part: str, timeout: int = 10) -> bool:
+        """
+        Waits for the current URL to contain the expected URL part using 'contains'.
+        Returns True if matched, False otherwise.
+        """
+        from selenium.webdriver.support.ui import WebDriverWait
+
+        print(f"🔍 Waiting for current URL to CONTAIN: '{expected_url_part}'")
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                lambda driver: expected_url_part in driver.current_url
+            )
+            print(f"✅ URL contains '{expected_url_part}': {self.driver.current_url}")
+            return True
+        except Exception:
+            print(
+                f"❌ URL did not contain '{expected_url_part}' within {timeout} seconds. Current URL: {self.driver.current_url}")
+            return False
+
     def upload_file(self, file_input_locator, file_path):
         """Uploads a file using the <input type='file'> element, with proper exception handling."""
         try:
@@ -752,10 +886,81 @@ class BasePage:
                 elem.clear()
             elem.send_keys(formatted_date)
             print("[✅] Date entered successfully.")
+            print("[DEBUG] After typing, field value is:", elem.get_attribute("value"))
         except TimeoutException:
             print("[❌] Element was not clickable within the wait time.")
         except Exception as e:
             print(f"[❌] Could not send date to input field: {e}")
+
+    def enter_month_year_keypad(self, input_locator, month: str, year: str, keypad_key_num: str):
+        """
+        Selects a month, year, and day from a date picker popup using a keypad key number for day selection.
+        :param input_locator: Tuple (By, value) for input field
+        :param month: Full month name (e.g., "October")
+        :param year: Year as string (e.g., "2025")
+        :param keypad_key_num: Single digit string (e.g., "1") to select the corresponding day
+        """
+        print(f"📅 Selecting {month} {year}, Day via keypad: {keypad_key_num}")
+
+        try:
+            # 1️⃣ Click input to open the calendar
+            input_box = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(input_locator))
+            input_box.click()
+
+            # Wait for the datepicker to be visible
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'datepicker')]"))
+            )
+
+            # 2️⃣ Select the correct year
+            year_locator = (By.XPATH, f"//div[contains(@class, 'datepicker')]//div[contains(text(), '{year}')]")
+            year_element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(year_locator))
+            year_element.click()
+
+            # 3️⃣ Select the correct month
+            month_locator = (By.XPATH,
+                             f"//div[contains(@class, 'datepicker')]//span[normalize-space(text())='{month}']")
+            try:
+                month_element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(month_locator))
+            except TimeoutException:
+                # Fallback to 3-letter abbreviation if full name fails
+                month_abbr = month[:3].lower()  # e.g., "oct"
+                month_locator = (By.XPATH,
+                                 f"//div[contains(@class, 'datepicker')]//span[normalize-space(text())='{month_abbr}']")
+                month_element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(month_locator))
+            month_element.click()
+
+            # 4️⃣ Navigate to the day grid and select the day using keypad input
+            day_grid_locator = (By.XPATH, "//div[contains(@class, 'datepicker')]//table[contains(@class, 'days')]")
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(day_grid_locator))
+
+            # Attempt to focus on the day grid with multiple TABs
+            input_box.send_keys(Keys.TAB * 2)  # Adjust number of TABs based on date picker focus
+            input_box.send_keys(Keys.ARROW_DOWN)  # Move to day grid if needed
+            input_box.send_keys(keypad_key_num)  # Press the keypad number (e.g., "1")
+            input_box.send_keys(Keys.ENTER)  # Confirm the selection
+
+            # Fallback: Click the day element if keypad fails
+            try:
+                day_locator = (By.XPATH,
+                               f"//div[contains(@class, 'datepicker')]//td[normalize-space(text())='{keypad_key_num}']")
+                day_element = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(day_locator))
+                day_element.click()
+            except (TimeoutException, NoSuchElementException):
+                pass  # Proceed with verification if keypad worked
+
+            # Verify the selected date is reflected in the input
+            expected_date = f"{keypad_key_num.zfill(2)}/{month_abbr}/{year}"  # e.g., "01/Oct/2025"
+            WebDriverWait(self.driver, 10).until(
+                EC.text_to_be_present_in_element_value(input_locator, expected_date)
+            )
+
+            print(f"✅ {month} {year}, Day {keypad_key_num} selected")
+            return True
+
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"❌ Failed to select {month} {year}, Day {keypad_key_num}: {str(e)}")
+            return False
 
     def select_dropdown_option(self, locator, value=None, text=None, index=None):
         """
@@ -1186,6 +1391,216 @@ class BasePage:
             raise NoSuchElementException(f"Element not found {locator} when fetching attribute '{attribute_name}'")
         except Exception as e:
             raise Exception(f"Failed to get attribute '{attribute_name}' from element {locator}: {e}")
+
+    def set_month_value(self, month_year, locator="//input[@type='month']", delay: int = 1):
+        """
+        Set month picker value using JavaScript in one function
+        Args:
+            month_year (str): Format "YYYY-MM" e.g., "2025-07"
+            locator (str): Locator for month input
+            delay (int): Optional delay after setting value
+        """
+        # wait + find + set value in one go
+        month_input = self.wait.until(EC.presence_of_element_located((By.XPATH, locator)))
+        self.driver.execute_script("arguments[0].value = arguments[1]", month_input, month_year)
+        if delay:
+            time.sleep(delay)
+        return month_input
+
+
+    def working_scroll_solution(self, pause_time=2.0):
+        """
+        GUARANTEED working scroll solution for fixed-layout applications
+        """
+        from selenium.webdriver.common.action_chains import ActionChains
+        from selenium.webdriver.common.keys import Keys
+
+        print("🚀 Starting guaranteed scroll solution...")
+
+        # Method 1: Simple window scroll (most reliable)
+        try:
+            print("📄 Trying window scroll...")
+
+            # Get current scroll position
+            initial_y = self.driver.execute_script("return window.pageYOffset;")
+
+            # Scroll down in increments
+            for i in range(5):
+                self.driver.execute_script(f"window.scrollBy(0, 300);")
+                time.sleep(pause_time)
+
+                current_y = self.driver.execute_script("return window.pageYOffset;")
+                print(f"✅ Scrolled to position: {current_y}px")
+
+                if current_y == initial_y and i > 0:
+                    print("⚠️ Window not scrollable, trying next method...")
+                    break
+                initial_y = current_y
+
+            # Scroll back to top
+            self.driver.execute_script("window.scrollTo(0, 0);")
+            print("✅ Window scroll completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ Window scroll failed: {e}")
+
+        # Method 2: Focus body + keyboard scroll
+        try:
+            print("⌨️ Trying keyboard scroll...")
+            body = self.driver.find_element(By.TAG_NAME, "body")
+            body.click()  # Focus body
+
+            for i in range(3):
+                body.send_keys(Keys.PAGE_DOWN)
+                time.sleep(pause_time)
+                print(f"✅ Keyboard scroll {i + 1}")
+
+            # Return to top
+            body.send_keys(Keys.HOME)
+            print("✅ Keyboard scroll completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ Keyboard scroll failed: {e}")
+
+        # Method 3: Mouse wheel events (most likely to work for your app)
+        try:
+            print("🖱️ Trying mouse wheel events...")
+
+            # Find the main content area
+            body = self.driver.find_element(By.TAG_NAME, "body")
+
+            # Move mouse to center and scroll
+            actions = ActionChains(self.driver)
+            actions.move_to_element(body).perform()
+
+            # Use JavaScript mouse wheel events
+            for i in range(5):
+                self.driver.execute_script("""
+                    var body = document.body;
+                    var event = new WheelEvent('wheel', {
+                        deltaY: 500,
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    body.dispatchEvent(event);
+                """)
+                time.sleep(pause_time)
+                print(f"✅ Mouse wheel scroll {i + 1}")
+
+            print("✅ Mouse wheel scroll completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ Mouse wheel scroll failed: {e}")
+
+        # Method 4: ActionChains mouse scroll
+        try:
+            print("🎯 Trying ActionChains scroll...")
+
+            element = self.driver.find_element(By.TAG_NAME, "body")
+            actions = ActionChains(self.driver)
+
+            # Perform scroll actions
+            for i in range(3):
+                actions.move_to_element(element)
+                actions.click()
+                actions.send_keys(Keys.PAGE_DOWN)
+                actions.perform()
+                time.sleep(pause_time)
+                print(f"✅ ActionChains scroll {i + 1}")
+
+            print("✅ ActionChains scroll completed")
+            return True
+
+        except Exception as e:
+            print(f"❌ ActionChains scroll failed: {e}")
+
+        print("❌ All scroll methods failed - application may not be scrollable")
+        return False
+
+    def press_key(self, key, element=None):
+        """
+        Press a specific keyboard key (special keys, combos, numbers, or letters).
+
+        Args:
+            key (str): Key name (e.g., "enter", "tab", "ctrl+a", "1", "a").
+            element (WebElement | tuple, optional): WebElement or (By, locator).
+        """
+        try:
+            action = ActionChains(self.driver)
+
+            # Resolve element if locator tuple is provided
+            if element and isinstance(element, tuple):
+                element = self.driver.find_element(*element)
+
+            # Mapping common keys
+            key_map = {
+                "enter": Keys.ENTER,
+                "return": Keys.RETURN,
+                "tab": Keys.TAB,
+                "escape": Keys.ESCAPE,
+                "space": Keys.SPACE,
+                "backspace": Keys.BACKSPACE,
+                "delete": Keys.DELETE,
+                "shift": Keys.SHIFT,
+                "ctrl": Keys.CONTROL,
+                "alt": Keys.ALT,
+                "arrow_up": Keys.ARROW_UP,
+                "arrow_down": Keys.ARROW_DOWN,
+                "arrow_left": Keys.ARROW_LEFT,
+                "arrow_right": Keys.ARROW_RIGHT,
+                "home": Keys.HOME,
+                "end": Keys.END,
+                "page_up": Keys.PAGE_UP,
+                "page_down": Keys.PAGE_DOWN,
+                "f1": Keys.F1,
+                "f2": Keys.F2,
+                "f5": Keys.F5,
+                "f12": Keys.F12,
+                "ctrl+a": (Keys.CONTROL, "a"),
+                "ctrl+c": (Keys.CONTROL, "c"),
+                "ctrl+v": (Keys.CONTROL, "v"),
+                "ctrl+x": (Keys.CONTROL, "x"),
+                "ctrl+s": (Keys.CONTROL, "s"),
+            }
+
+            key_lower = key.lower()
+
+            # 1️⃣ Handle numbers (0–9) and alphabets (a–z)
+            if key_lower.isdigit() or (len(key_lower) == 1 and key_lower.isalpha()):
+                mapped_key = key_lower
+            elif key_lower in key_map:
+                mapped_key = key_map[key_lower]
+            else:
+                print(f"⚠️ Unsupported key: {key}")
+                return False
+
+            # 2️⃣ Handle key press
+            if isinstance(mapped_key, tuple):  # Combo keys like Ctrl+A
+                if element:
+                    element.send_keys(*mapped_key)
+                else:
+                    action.key_down(mapped_key[0]).send_keys(mapped_key[1]).key_up(mapped_key[0]).perform()
+            else:  # Single key or character
+                if element:
+                    element.send_keys(mapped_key)
+                else:
+                    action.send_keys(mapped_key).perform()
+
+            print(f"✅ Pressed key: {key}")
+            return True
+
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"❌ Error pressing key {key}: {e}")
+            return False
+
+
+
+
+
+
 
 
 

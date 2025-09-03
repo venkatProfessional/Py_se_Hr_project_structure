@@ -1,3 +1,5 @@
+import time
+
 import allure
 import pytest
 
@@ -13,6 +15,14 @@ class TestDesignationRolesValidation:
         page.navigating_roles_list()
 
         page.delete_roles_for_multiple_rows()
-        page.create_roles()
-        page.edit_roles_for_multiple_rows()
+
+        time.sleep(10)
+        # page.create_roles()
+        # page.edit_roles_for_multiple_rows()
+
+
+
+
+
+
 

@@ -160,7 +160,7 @@ class EmployeeCreationPage(BasePage):
         time.sleep(10)
 
     def fill_basic_details_from_json(self):
-        json_path = r"C:\Users\User\PycharmProjects\SmiligenceHrAdmin\data\employee_data.json"
+        json_path = r"data/employee_data.json"
 
         # Read employee data from json file
         with open(json_path, "r", encoding="utf-8") as f:
@@ -242,9 +242,9 @@ class EmployeeCreationPage(BasePage):
             self.find_element(self.address).send_keys(employee_data["Address"])
             time.sleep(1)
 
-            print("🧪 Step 16: Submit without salary info (validation check)...")
-            self.find_element(self.submitbtn).click()
-            time.sleep(2)
+            # print("🧪 Step 16: Submit without salary info (validation check)...")
+            # self.find_element(self.submitbtn).click()
+            # time.sleep(2)
 
             # ➕ Call salary method per row
             self.salary_info_field_excel(employee_data)

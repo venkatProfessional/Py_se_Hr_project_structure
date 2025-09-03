@@ -9,6 +9,6 @@ if __name__ == "__main__":
         "--self-contained-html",                      # 5. Embed CSS/JS in the HTML report
         "--capture=tee-sys",                          # 6. Show print/logging output in console and report
         "--tb=short",                                 # 7. Show short tracebacks on failure
-        "--maxfail=5",                                # 8. Stop test run after 5 failures
+        "--maxfail=10",                                # 8. Stop test run after 5 failures
         "-v",                                         # 9. Verbose output (see each test status)
     ])

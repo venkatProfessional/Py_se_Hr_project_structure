@@ -8,3 +8,16 @@ class TestEmailTemplatePage:
     def test_navigating_to_email_templates(self, driver):
         email_template_page = EmailTemplatePage(driver)
         email_template_page.navigating_to_email_templates()
+        email_template_page.implementing_create_templates()
+        email_template_page.implementing_edit()
+        email_template_page.implementing_delete()
+        email_template_page.implmenting_force_delete()
+
+
+
+
+
+
+
+
+

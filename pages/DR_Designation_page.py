@@ -27,7 +27,7 @@ class DesignationPage(BasePage):
     back_button = (By.XPATH, "//a[normalize-space()='Back']")
 
     # edit
-    edit_button =(By.XPATH, "//tbody/tr[1]/td[6]/a[1]")
+    edit_button =(By.XPATH, "//tbody/tr[1]/td[6]/div[1]/a[1]")
     edit_input = (By.XPATH, "//input[@id='name']")
     edit_description = (By.XPATH, "//textarea[@id='description']")
     edit_submit_button = (By.XPATH, "//span[normalize-space()='Submit']")
@@ -35,7 +35,7 @@ class DesignationPage(BasePage):
 
     #delete
 
-    delete_button = (By.XPATH, "//a[contains(@href, '/designation/delete') and contains(@class, 'btn-danger')]")
+    delete_button = (By.XPATH, "//tbody/tr[1]/td[6]/div[1]/button[1]")
     view_delete_button = (By.XPATH, "//a[normalize-space()='View Deleted Designation']")
     restore_button = (By.XPATH, "//a[normalize-space()='Restore']")
     backtodesignationbtn = (By.XPATH, "//a[normalize-space()='Back to Designations']")
@@ -114,6 +114,49 @@ class DesignationPage(BasePage):
         print("description updated")
         self.wait_and_click(self.edit_submit_button)
         print("submit button in edit page is clicked")
+
+    def handle_single_delete(self):
+        print("🗑️ Handle single delete started")
+
+        try:
+            # Find the first delete button
+            delete_button = self.driver.find_element(*self.delete_button)
+            delete_button.click()
+            print("🖱️ Delete clicked — waiting for alert...")
+
+            # Wait and handle alert
+            WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+            alert = self.driver.switch_to.alert
+            print("⚠️ Alert text:", alert.text)
+            alert.accept()
+            print("✅ Alert accepted")
+
+            # Perform restore flow
+            view_delete = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(self.view_delete_button)
+            )
+            view_delete.click()
+            print("📄 View Delete clicked")
+            time.sleep(1)
+
+            restore_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(self.restore_button)
+            )
+            restore_button.click()
+            print("♻️ Restore clicked")
+            time.sleep(1)
+
+            back_to_designation = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(self.backtodesignationbtn)
+            )
+            back_to_designation.click()
+            print("🔙 Back to Designation clicked")
+            time.sleep(1)
+
+        except TimeoutException:
+            print("❌ No alert appeared or element not clickable")
+        except Exception as e:
+            print(f"❌ Exception occurred: {e}")
 
     def handlemultipleedits(self):
         print("🛠️ Starting multiple edit operations...")
@@ -253,7 +296,7 @@ class DesignationPage(BasePage):
     def handle_all_status_edits(self):
         # Find all edit buttons
         edit_buttons = self.driver.find_elements(By.XPATH,
-                                                 "//a[@class='btn btn-sm btn-primary'][normalize-space()='Edit']")
+                                                 "//tbody/tr[1]/td[6]/div[1]/a[1]")
         print(f"Found {len(edit_buttons)} edit buttons.")
 
         for i in range(len(edit_buttons)):

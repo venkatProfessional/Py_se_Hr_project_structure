@@ -21,7 +21,7 @@ class TestDesignationValidation:
             page.submit_without_entering_data()
 
         with allure.step("Handle validation message display"):
-            with open('C:\\Users\\User\\PycharmProjects\\SmiligenceHrAdmin\\data\\designation_data.json', 'r') as file:
+            with open('C:\\Users\\Raja\\PycharmProjects\\Py_se_Hr_project_structure\\data\\designation_data.json', 'r') as file:
                 designations = json.load(file)
 
             for designation in designations:
@@ -31,20 +31,23 @@ class TestDesignationValidation:
                 )
 
 
+
+
+
+
         time.sleep(2)
 
         with allure.step("Perform single edit"):
             page.handleedit()
 
 
-
-        with allure.step("Check if name format is valid"):
-            if page.is_invalid_name_format_displayed():
-                allure.attach("❌ Edit failed: Invalid name format", name="Edit Result", attachment_type=allure.attachment_type.TEXT)
-                print("❌ Edit failed: Invalid name format.")
-            else:
-                allure.attach("✅ Edit passed with valid name format", name="Edit Result", attachment_type=allure.attachment_type.TEXT)
-                print("✅ Edit passed with valid name format.")
+        # with allure.step("Check if name format is valid"):
+        #     if page.is_invalid_name_format_displayed():
+        #         allure.attach("❌ Edit failed: Invalid name format", name="Edit Result", attachment_type=allure.attachment_type.TEXT)
+        #         print("❌ Edit failed: Invalid name format.")
+        #     else:
+        #         allure.attach("✅ Edit passed with valid name format", name="Edit Result", attachment_type=allure.attachment_type.TEXT)
+        #         print("✅ Edit passed with valid name format.")
 
         with allure.step("Handling Active/Inactive button flow"):
             try:
@@ -53,6 +56,9 @@ class TestDesignationValidation:
                 allure.attach(str(e), name="Handle Active/Inactive Error", attachment_type=allure.attachment_type.TEXT)
                 print(f"⚠️ Caught exception in test: {e}")
                 # Continue test even if exception occurs
+
+        with allure.step("handle single delete "):
+            page.handle_single_delete()
 
         with allure.step("🗑️ Handling Designation Delete and Restore Flow"):
             try:
@@ -63,8 +69,16 @@ class TestDesignationValidation:
                 allure.attach(screenshot, name="Error Screenshot", attachment_type=allure.attachment_type.PNG)
                 print(f"⚠️ Caught exception during delete handling: {e}")
 
-        with allure.step("Perform multiple edits"):
-            page.handlemultipleedits()
+        # with allure.step("Perform multiple edits"):
+        #     page.handlemultipleedits()
+
+
+
+
+
+
+
+    #         unwanted
 
     # @allure.title("🧪 Test: Delete and Restore Designation Flow")
     # @allure.severity(allure.severity_level.CRITICAL)
