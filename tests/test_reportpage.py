@@ -19,7 +19,7 @@ class TestReportsPage:
     project_report = (By.XPATH, "//div[normalize-space()='Project Report']")  # Corrected duplicate
     overall_report = (By.XPATH, "//div[normalize-space()='Overall Report']")
     final_statement = (By.XPATH, "//div[normalize-space()='Final Statement']")
-    accounts_report = (By.XPATH, "//div[normalize-space()='Accounts Reports']")
+    accounts_report = (By.XPATH, "//a[contains(@class,'menu-toggle')]/div[text()='Accounts Reports']")
 
     def navigate_to_reports_tab(self, driver):
         """
@@ -62,7 +62,7 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.employee_attendance_report)
-        reports_page.implementing_Employee_attendance_report()
+        reports_page.implementing_employee_attendance_report()
 
     def test_navigate_to_late_comers_report(self, driver):
         """
@@ -71,7 +71,7 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.late_comers_report)
-        reports_page.implementing_Employee_latecommer_report()
+        reports_page.implementing_employee_latecomer_report()
 
 
     def test_navigate_to_permission_report(self, driver):
@@ -81,9 +81,7 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.permission_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("permission-report"))
-        assert "permission-report" in driver.current_url.lower(), "❌ Navigation to Permission Report failed!"
-        print("✅ Successfully navigated to Permission Report.")
+        reports_page.implementing_permission_report()
 
     def test_navigate_to_leave_report(self, driver):
         """
@@ -92,9 +90,7 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.leave_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("leave-report"))
-        assert "leave-report" in driver.current_url.lower(), "❌ Navigation to Leave Report failed!"
-        print("✅ Successfully navigated to Leave Report.")
+        reports_page.implementing_leave_report()
 
     def test_navigate_to_issue_report(self, driver):
         """
@@ -103,9 +99,9 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.issue_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("issue-report"))
-        assert "issue-report" in driver.current_url.lower(), "❌ Navigation to Issue Report failed!"
-        print("✅ Successfully navigated to Issue Report.")
+        reports_page.implementing_issue_report()
+        reports_page.implementing_issue_report_raise_issues()
+
 
     def test_navigate_to_project_report(self, driver):
         """
@@ -114,9 +110,8 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.project_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("project-report"))
-        assert "project-report" in driver.current_url.lower(), "❌ Navigation to Project Report failed!"
-        print("✅ Successfully navigated to Project Report.")
+        reports_page.implementing_project_report()
+
 
     def test_navigate_to_overall_report(self, driver):
         """
@@ -125,9 +120,10 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.overall_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("overall-report"))
-        assert "overall-report" in driver.current_url.lower(), "❌ Navigation to Overall Report failed!"
-        print("✅ Successfully navigated to Overall Report.")
+        reports_page.implementing_Overall_report_download()
+        # WebDriverWait(driver, 10).until(EC.url_contains("overall-report"))
+        # assert "overall-report" in driver.current_url.lower(), "❌ Navigation to Overall Report failed!"
+        # print("✅ Successfully navigated to Overall Report.")
 
     def test_navigate_to_final_statement(self, driver):
         """
@@ -136,9 +132,9 @@ class TestReportsPage:
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
         reports_page.wait_and_click(self.final_statement)
-        WebDriverWait(driver, 10).until(EC.url_contains("final-statement"))
-        assert "final-statement" in driver.current_url.lower(), "❌ Navigation to Final Statement failed!"
-        print("✅ Successfully navigated to Final Statement.")
+        reports_page.implementing_final_report_download_no()
+        reports_page.implementing_final_report_download_yes()
+
 
     def test_navigate_to_accounts_report(self, driver):
         """
@@ -146,7 +142,10 @@ class TestReportsPage:
         """
         reports_page = ReportsPage(driver)
         reports_page.clickonreportstab()
+        reports_page.scroll_to_element(self.final_statement)
         reports_page.wait_and_click(self.accounts_report)
-        WebDriverWait(driver, 10).until(EC.url_contains("accounts-report"))
-        assert "accounts-report" in driver.current_url.lower(), "❌ Navigation to Accounts Report failed!"
-        print("✅ Successfully navigated to Accounts Report.")
+        reports_page.implementing_accounts_report_EPF_report()
+        reports_page.implementing_accounts_report_ESI_report()
+        reports_page.implementing_accounts_report_Top_sheet_report()
+
+

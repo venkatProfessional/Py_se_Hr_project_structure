@@ -3,6 +3,7 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
+import glob
 
 
 import allure
@@ -13,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, UnexpectedTagNameException, \
     NoAlertPresentException, ElementNotInteractableException, WebDriverException, JavascriptException, \
-    StaleElementReferenceException, ElementClickInterceptedException
+    StaleElementReferenceException, ElementClickInterceptedException, NoSuchWindowException
 import time
 
 class BasePage:
@@ -221,9 +222,61 @@ class BasePage:
         self.driver.switch_to.default_content()
 
     # Switch to new window/tab
-    def switch_to_new_window(self):
-        windows = self.driver.window_handles
-        self.driver.switch_to.window(windows[-1])
+    def switch_to_new_window(self, timeout=5):
+        """
+        Switches to the most recently opened window (child window).
+
+        Args:
+            timeout (int): Max time to wait for new window.
+
+        Returns:
+            bool: True if switched successfully, False otherwise.
+        """
+        try:
+            current_handles = self.driver.window_handles
+            start_time = time.time()
+
+            while time.time() - start_time < timeout:
+                new_handles = self.driver.window_handles
+                if len(new_handles) > len(current_handles):
+                    new_window = list(set(new_handles) - set(current_handles))[0]
+                    self.driver.switch_to.window(new_window)
+                    print("✅ Switched to new window")
+                    return True
+                time.sleep(0.5)
+
+            raise TimeoutException("⏳ No new window found within timeout.")
+
+        except (NoSuchWindowException, TimeoutException) as e:
+            print(f"❌ Failed to switch to new window: {str(e)}")
+            return False
+
+    def switch_to_parent_window(self, timeout=5):
+        """
+        Switches Selenium's context back to the parent (main) window.
+
+        Args:
+            timeout (int): Max time in seconds to wait for the parent window.
+
+        Returns:
+            bool: True if successfully switched, False otherwise.
+        """
+        try:
+            parent_handle = self.driver.window_handles[0]  # The first window is always the parent
+            start_time = time.time()
+
+            while time.time() - start_time < timeout:
+                if parent_handle in self.driver.window_handles:
+                    self.driver.switch_to.window(parent_handle)
+                    print("✅ Switched to parent window")
+                    return True
+                time.sleep(0.5)
+
+            raise TimeoutException("⏳ Parent window not found within timeout.")
+
+        except (NoSuchWindowException, TimeoutException) as e:
+            print(f"❌ Failed to switch to parent window: {str(e)}")
+            return False
 
     def is_element_visible(self, locator, timeout=5):
         """Check if element is visible within timeout."""
@@ -242,7 +295,11 @@ class BasePage:
 
     # Capture screenshot (useful for debugging)
     def take_screenshot(self, file_name):
-        self.driver.save_screenshot(file_name)
+        if not os.path.exists(file_name):
+            self.driver.save_screenshot(file_name)
+            print(f"✅ Screenshot saved: {file_name}")
+        else:
+            print(f"⚠️ Screenshot already exists: {file_name}, skipping save")
 
     # Wait for specific seconds (not recommended but useful sometimes)
     def wait_for(self, seconds):
@@ -251,10 +308,13 @@ class BasePage:
     # Navigate back in browser history
     def navigate_back(self):
         self.driver.back()
+        print("🔙 Navigated back triggered")
+
 
     # Navigate forward in browser history
     def navigate_forward(self):
         self.driver.forward()
+        print(" Navigated forward triggered")
 
     def slow_typing(self, locator, text, delay=0.1):
         element = self.driver.find_element(*locator)
@@ -406,7 +466,7 @@ class BasePage:
 
         # ✅ Fix: Add 'file_path' parameter
 
-    def wait_for_seconds(self, seconds):
+    def wait_for_seconds(self, seconds=2):
         time.sleep(seconds)
 
     def read_employee_json(self):
@@ -689,6 +749,41 @@ class BasePage:
         print("❌ PDF download failed or timed out.")
         return False
 
+    def verify_recent_download(self, extension, download_dir, timeout=15):
+        """
+        Verifies that a file with the given extension is downloaded *recently*
+        within the timeout after triggering the download.
+
+        Args:
+            extension (str): File extension to check, e.g. ".pdf" or ".xlsx"
+            download_dir (str): Path to the download folder
+            timeout (int): Max wait time in seconds
+
+        Returns:
+            str | None: The path of the downloaded file if found, else None
+        """
+        print(f"⏳ Waiting for {extension} file in {download_dir}...")
+
+        # Record the start time (so we only consider files created AFTER this)
+        start_time = time.time()
+
+        end_time = start_time + timeout
+        while time.time() < end_time:
+            files = glob.glob(os.path.join(download_dir, f"*{extension}"))
+            if files:
+                latest_file = max(files, key=os.path.getctime)
+                file_ctime = os.path.getctime(latest_file)
+
+                # ✅ Only accept if it was created after we triggered the download
+                if file_ctime >= start_time:
+                    print(f"✅ Downloaded {extension} file: {latest_file}")
+                    return latest_file
+            time.sleep(1)
+
+        print(f"❌ No recent {extension} file downloaded within {timeout} seconds.")
+        return None
+
+
     def verify_file_downloaded(self, expected_filename=None, file_extension=None, timeout=15, download_dir=None):
         """
         Verifies if the latest matching file is downloaded within the given timeout.
@@ -753,6 +848,62 @@ class BasePage:
 
         print("❌ File not found within timeout.")
         return None
+
+
+    def get_latest_file(self, dir_path, extension=None):
+        """
+        Return the latest file from a directory (optionally filtered by extension)
+        and print the result.
+
+        Args:
+            dir_path (str): Directory path.
+            extension (str or None): File extension filter (e.g., '.pdf', '.xlsx').
+                                     If None, all file types are considered.
+        """
+        dir_path = Path(dir_path)
+        if not dir_path.exists() or not dir_path.is_dir():
+            print(f"❌ Directory does not exist: {dir_path}")
+            return None
+
+        # Normalize extension if provided (so user can pass "pdf" or ".pdf")
+        if extension and not extension.startswith('.'):
+            extension = '.' + extension
+
+        files = [
+            f for f in dir_path.iterdir()
+            if f.is_file() and (extension is None or f.suffix.lower() == extension.lower())
+        ]
+
+        if not files:
+            print(f"⚠️ No files found in the directory with extension {extension or 'any'}")
+            return None
+
+        latest_file = max(files, key=lambda f: f.stat().st_mtime)
+        print(f"✅ Latest file: {latest_file.name}")
+        return latest_file
+
+
+
+    def get_latest_file_recent_secondsago(self, dir_path, lookback_seconds=10):
+        """
+        Return the latest file from a directory modified within the last `lookback_seconds`.
+        Prints the result inside the function.
+        """
+        dir_path = Path(dir_path)
+        if not dir_path.exists() or not dir_path.is_dir():
+            print(f"❌ Directory does not exist: {dir_path}")
+            return None
+
+        current_time = time.time()
+        files = [f for f in dir_path.iterdir() if f.is_file() and (current_time - f.stat().st_mtime <= lookback_seconds)]
+
+        if not files:
+            print(f"⚠️ No files found in the last {lookback_seconds} seconds")
+            return None
+
+        latest_file = max(files, key=lambda f: f.stat().st_mtime)
+        print(f"✅ Latest file downloaded recently: {latest_file.name}")
+        return latest_file
 
     def handle_popup_and_click(self, popup_locator, button_locator, timeout=10):
         """
