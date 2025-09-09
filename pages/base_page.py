@@ -7,6 +7,7 @@ import glob
 
 
 import allure
+import pandas as pd
 from selenium.webdriver import Keys, ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -310,6 +311,26 @@ class BasePage:
         self.driver.back()
         print("🔙 Navigated back triggered")
 
+    def navigate_back_until_url(self, target_url: str, max_attempts: int = 5, wait_time: int = 2):
+        """
+        Navigate back in browser history until the current URL matches the target URL.
+
+        :param target_url: The URL to stop at.
+        :param max_attempts: Maximum number of back navigations.
+        :param wait_time: Seconds to wait after each navigation.
+        """
+        attempts = 0
+        while attempts < max_attempts:
+            current_url = self.driver.current_url
+            if current_url == target_url:
+                print(f"✅ Reached target URL: {current_url}")
+                return
+            self.driver.back()
+            print(f"🔙 Navigated back (attempt {attempts + 1}/{max_attempts}) | Current URL: {current_url}")
+            self.wait_for_seconds(wait_time)  # assuming you already have a wait helper method
+            attempts += 1
+
+        print(f"⚠️ Max attempts reached. Target URL '{target_url}' not found. Final URL: {self.driver.current_url}")
 
     # Navigate forward in browser history
     def navigate_forward(self):
@@ -1746,6 +1767,28 @@ class BasePage:
         except (TimeoutException, NoSuchElementException) as e:
             print(f"❌ Error pressing key {key}: {e}")
             return False
+
+    def refresh_page(self):
+        """Refresh the current page and wait for it to load."""
+        self.driver.refresh()
+        # Optionally, wait for the page's main element to be visible
+        try:
+            self.wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
+            print("Page refreshed and fully loaded.")
+        except Exception as e:
+            print(f"Warning: Page refresh timeout - {e}")
+
+    def format_excel_date(date_val):
+        """Convert Excel date to string format dd/mm/yyyy"""
+        if pd.isna(date_val):
+            return ""
+        if isinstance(date_val, datetime):
+            return date_val.strftime("%d/%m/%Y")  # adjust to your input field format
+        else:
+            try:
+                return pd.to_datetime(date_val).strftime("%d/%m/%Y")
+            except:
+                return str(date_val)
 
 
 

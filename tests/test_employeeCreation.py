@@ -13,8 +13,7 @@ class TestEmployeeCreation:
         # page.fill_basic_fields()
         # page.salary_info_field()
 
-        page.fill_basic_details_from_json()
+        # page.fill_basic_details_from_json()
         # page.salary_info_field_excel()
 
-
-
+        page.fill_basic_details_from_excel()

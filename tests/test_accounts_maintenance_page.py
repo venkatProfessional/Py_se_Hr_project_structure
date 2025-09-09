@@ -28,3 +28,4 @@ class TestAccountsMaintenancePage:
         print("✅ Implemented Accounts tab action")
         accounts_page.implement_expense_catagories()
 
+
