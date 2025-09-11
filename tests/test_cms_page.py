@@ -13,4 +13,9 @@ class TestEmployeeCreation:
         # Just call it without passing self or driver again
         page.navigate_to_cms_page()
         page.implementing_cms_create()
+        page.implementing_cms_edit()
+        page.implementing_cms_delete_restore()
+        page.implementing_cms_delete_permenantely()
+
+
 

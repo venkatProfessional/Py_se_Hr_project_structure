@@ -30,6 +30,32 @@ class BasePage:
         element = self.driver.find_element(*locator)
         assert element.is_displayed(), message or f"Element {locator} is not visible"
 
+    def assert_flash_message(self, locator, expected_text=None, timeout=5):
+        """
+        Waits for a flash message to appear and validates its text.
+        :param locator: Tuple like (By.XPATH, "//div[@class='flash-msg']")
+        :param expected_text: Text expected in the flash message
+        :param timeout: Max time (seconds) to wait for the message to appear
+        """
+        try:
+            # Wait until the flash message is visible (but don't wait too long)
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located(locator)
+            )
+
+            # Immediately capture text before it disappears
+            actual_text = element.text.strip()
+
+            if expected_text:
+                assert expected_text in actual_text, (
+                    f"Expected '{expected_text}', but got '{actual_text}'"
+                )
+
+            print(f"✅ Flash message captured: '{actual_text}'")
+            return True
+        except Exception as e:
+            raise AssertionError(f"Flash message '{expected_text}' not found within {timeout} seconds") from e
+
     def assert_text_equals(self, locator, expected_text, message=None):
         try:
             # Wait for the element to be visible before asserting
@@ -1789,6 +1815,53 @@ class BasePage:
                 return pd.to_datetime(date_val).strftime("%d/%m/%Y")
             except:
                 return str(date_val)
+
+    def get_next_incremental_value(
+            self,
+            folder_path="data/JSONFILES",
+            file_name="serial_store.json",
+            key="serial_number",
+            prefix="DXPS9310-",
+            start=1000
+    ):
+        """
+        Generic, parameterized function to get an auto-incremented value.
+        Automatically creates folder & file if missing.
+
+        :param folder_path: Folder where JSON file will be stored (default: data/JSONFILES)
+        :param file_name: JSON file name (default: serial_store.json)
+        :param key: Unique key for storing separate counters
+        :param prefix: String prefix to prepend to the number
+        :param start: Starting number if the key does not exist yet
+        :return: Full value with prefix (e.g., 'DXPS9310-1001')
+        """
+        # ✅ Ensure folder exists
+        os.makedirs(folder_path, exist_ok=True)
+
+        file_path = os.path.join(folder_path, file_name)
+
+        # ✅ Ensure file exists with empty dict if not present
+        if not os.path.exists(file_path):
+            with open(file_path, "w") as f:
+                json.dump({}, f, indent=4)
+
+        # ✅ Load JSON data safely
+        with open(file_path, "r") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {}
+
+        # ✅ Get last number for this key, increment, and update
+        last_number = data.get(key, start)
+        new_number = last_number + 1
+        data[key] = new_number
+
+        # ✅ Save updated value back to JSON
+        with open(file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+        return f"{prefix}{new_number}"
 
 
 
